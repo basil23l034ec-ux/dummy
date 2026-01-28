@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Trolley - Customer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/customer-frontend/static/css/style.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <nav class="bg-indigo-600 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <i class="fas fa-shopping-cart"></i> SmartTrolley
+            </h1>
+            <div id="cart-info" class="flex items-center gap-4">
+                <span id="cart-count" class="bg-white text-indigo-600 rounded-full px-2 py-1 text-xs font-bold">0</span>
+                <span id="cart-total" class="font-semibold">₹0.00</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-6 flex justify-center">
+        <!-- Cart Section -->
+        <div class="w-full max-w-2xl">
+            <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-24 border border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <i class="fas fa-shopping-basket text-indigo-500"></i> Your Cart
+                </h2>
+                
+                <div id="cart-items" class="space-y-4 mb-6 max-h-[400px] overflow-y-auto pr-2">
+                    <!-- Cart items will be loaded here -->
+                    <p class="text-gray-500 text-center py-8">Your cart is empty. Scan an item to start!</p>
+                </div>
+
+                <div class="border-t pt-6 space-y-3">
+                    <div class="flex justify-between text-gray-600">
+                        <span>Subtotal</span>
+                        <span id="subtotal">₹0.00</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>Tax (0%)</span>
+                        <span>₹0.00</span>
+                    </div>
+                    <div class="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t">
+                        <span>Total</span>
+                        <span id="total-amount">₹0.00</span>
+                    </div>
+                </div>
+
+                <button id="checkout-btn" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold mt-8 hover:bg-indigo-700 transition shadow-lg shadow-indigo-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Proceed to Checkout
+                </button>
+
+                <!-- RFID Simulation (For Demo) -->
+                <div class="mt-8 p-4 bg-gray-100 rounded-xl">
+                    <p class="text-xs font-bold text-gray-400 uppercase mb-3">Simulation Mode (RFID)</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="simulateScan('52612D5C')" class="text-xs bg-white border p-2 rounded hover:bg-gray-50">Scan Rice</button>
+                        <button onclick="simulateScan('9917FEE4')" class="text-xs bg-white border p-2 rounded hover:bg-gray-50">Scan Oil</button>
+                        <button onclick="simulateScan('03563B38')" class="text-xs bg-white border p-2 rounded hover:bg-gray-50">Scan Milk</button>
+                        <button onclick="simulateScan('B3211839')" class="text-xs bg-white border p-2 rounded hover:bg-gray-50">Scan Bread</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[100]">
+        <div class="bg-white p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl scale-95 transition-transform">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Order Placed!</h3>
+            <p class="text-gray-600 mb-8">Thank you for shopping with Smart Trolley. Your receipt has been generated.</p>
+            <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">
+                Start New Shop
+            </button>
+        </div>
+    </div>
+
+    <script src="/customer-frontend/static/js/api.js"></script>
+    <script src="/customer-frontend/static/js/main.js"></script>
+</body>
+</html>

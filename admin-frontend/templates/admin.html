@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Trolley - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900 text-white min-h-screen sticky top-0">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <i class="fas fa-user-shield text-indigo-400"></i> Admin
+            </h1>
+        </div>
+        <nav class="mt-6">
+            <a href="#" class="flex items-center gap-3 px-6 py-4 bg-indigo-600 text-white">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="#" class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-box"></i> Inventory
+            </a>
+            <a href="#" class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-shopping-bag"></i> Sales
+            </a>
+            <a href="#" class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-slate-800">Dashboard Overview</h2>
+            <div class="flex items-center gap-4">
+                <span id="current-date" class="text-slate-500 font-medium"></span>
+                <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center">
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm font-bold uppercase mb-2">Total Sales</p>
+                <h3 id="stat-sales" class="text-2xl font-black text-slate-900">₹0.00</h3>
+                <p class="text-green-500 text-xs mt-2 font-bold"><i class="fas fa-arrow-up"></i> 12% from last month</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm font-bold uppercase mb-2">Total Orders</p>
+                <h3 id="stat-orders" class="text-2xl font-black text-slate-900">0</h3>
+                <p class="text-indigo-500 text-xs mt-2 font-bold">In-store traffic</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm font-bold uppercase mb-2">Inventory Items</p>
+                <h3 id="stat-inventory" class="text-2xl font-black text-slate-900">0</h3>
+                <p class="text-orange-500 text-xs mt-2 font-bold">2 items low stock</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-sm font-bold uppercase mb-2">System Status</p>
+                <h3 class="text-2xl font-black text-green-500">Online</h3>
+                <p class="text-slate-400 text-xs mt-2 font-bold">RFID Reader Connected</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 mb-6">Daily Sales Revenue</h3>
+                <canvas id="dailySalesChart" height="200"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="font-bold text-slate-800 mb-6">Monthly Growth</h3>
+                <canvas id="monthlySalesChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Inventory -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-6 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Product Inventory</h3>
+                    <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700">Add Product</button>
+                </div>
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold">
+                        <tr>
+                            <th class="px-6 py-4">Product Name</th>
+                            <th class="px-6 py-4">Price</th>
+                            <th class="px-6 py-4">Stock</th>
+                            <th class="px-6 py-4">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-table" class="divide-y divide-slate-100">
+                        <!-- Inventory rows will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                <h3 class="font-bold text-slate-800 mb-6">Recent Sales</h3>
+                <div id="recent-sales-list" class="space-y-4">
+                    <!-- Recent sales will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chatbot Widget -->
+    <div id="chat-widget" class="fixed bottom-8 right-8 z-50">
+        <button onclick="toggleChat()" class="w-16 h-16 bg-indigo-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl hover:bg-indigo-700 transition">
+            <i class="fas fa-robot"></i>
+        </button>
+        <div id="chat-window" class="hidden absolute bottom-20 right-0 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col">
+            <div class="bg-indigo-600 p-4 text-white">
+                <h4 class="font-bold">Smart Assistant</h4>
+                <p class="text-xs text-indigo-200">Ask about stock or sales</p>
+            </div>
+            <div id="chat-messages" class="h-64 overflow-y-auto p-4 space-y-3 text-sm">
+                <div class="bg-slate-100 p-2 rounded-lg text-slate-700">Hello! I can help you analyze sales data or check stock levels.</div>
+            </div>
+            <div class="p-4 border-t">
+                <div class="flex gap-2">
+                    <input type="text" id="chat-input" placeholder="Type a message..." class="flex-1 bg-slate-50 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <button onclick="sendMessage()" class="bg-indigo-600 text-white w-10 h-10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/admin-frontend/static/js/api.js"></script>
+    <script src="/admin-frontend/static/js/admin.js"></script>
+</body>
+</html>
