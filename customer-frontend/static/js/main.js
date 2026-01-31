@@ -6,10 +6,10 @@ let products = {};
 
 async function init() {
     await refreshCart();
-    
+
     // Setup event listeners
     document.getElementById('checkout-btn').addEventListener('click', handleCheckout);
-    
+
     // Start polling for cart updates (if real RFID hardware updates the backend)
     setInterval(refreshCart, 3000);
 }
@@ -30,10 +30,10 @@ function renderCart(cartData) {
     const subtotalEl = document.getElementById('subtotal');
     const totalEl = document.getElementById('total-amount');
     const checkoutBtn = document.getElementById('checkout-btn');
-    
+
     const items = Object.values(cartData.items || {});
     const totalAmount = cartData.total || 0;
-    
+
     if (items.length === 0) {
         cartList.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty. Scan an item to start!</p>';
         cartCount.textContent = '0';
@@ -43,17 +43,17 @@ function renderCart(cartData) {
         checkoutBtn.disabled = true;
         return;
     }
-    
+
     cartList.innerHTML = '';
     let count = 0;
-    
+
     items.forEach(item => {
         const itemTotal = item.price * item.qty;
         count += item.qty;
-        
+
         const div = document.createElement('div');
         div.className = 'flex justify-between items-center p-4 bg-gray-50 rounded-2xl hover:bg-red-50 active:bg-red-100 cursor-pointer transition-all border border-gray-100 hover:border-red-200 relative group';
-        
+
         div.innerHTML = `
             <div class="flex items-center gap-4 flex-1">
                 <div class="relative">
@@ -63,7 +63,10 @@ function renderCart(cartData) {
                     </span>
                 </div>
                 <div>
-                    <p class="font-bold text-gray-800 text-lg leading-tight">${item.name}</p>
+                    <p class="font-bold text-gray-800 text-lg leading-tight">
+                        ${item.name} 
+                        ${item.unit ? `<span class="text-sm font-normal text-gray-500 ml-1">(${item.unit})</span>` : ''}
+                    </p>
                     <p class="text-indigo-600 font-semibold mt-1">₹${item.price}</p>
                     <p class="text-xs text-gray-400 mt-1 uppercase tracking-wider">Tap to remove</p>
                 </div>
@@ -75,16 +78,16 @@ function renderCart(cartData) {
                 </button>
             </div>
         `;
-        
+
         // Handle click on the whole card or the button
         div.onclick = (e) => {
             e.stopPropagation();
             handleRemove(item.id);
         };
-        
+
         cartList.appendChild(div);
     });
-    
+
     cartCount.textContent = count;
     cartTotalTop.textContent = `₹${totalAmount.toFixed(2)}`;
     subtotalEl.textContent = `₹${totalAmount.toFixed(2)}`;

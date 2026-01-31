@@ -1,110 +1,127 @@
-#include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-#include <WiFiClient.h>
-#include <SPI.h>
+#include <ESP8266WiFi.h>
 #include <MFRC522.h>
+#include <SPI.h>
+#include <WiFiClient.h>
 
-// --------------------------------------------------------------------------------
-//  CONFIGURATION
-// --------------------------------------------------------------------------------
 
-// 1. Wi-Fi Credentials
-const char* ssid     = "YOUR_WIFI_SSID";     // <--- CHANGE THIS
-const char* password = "YOUR_WIFI_PASSWORD"; // <--- CHANGE THIS
+/*
+ * -----------------------------------------------------------------------------------------
+ *             MFRC522      Arduino       NodeMCU (ESP8266)
+ *             Reader/PCD   Uno/101       Pinout
+ * Signal      Pin          Pin           Pin
+ * -----------------------------------------------------------------------------------------
+ * RST/Reset   RST          9             D3 (GPIO0)
+ * SPI SS      SDA(SS)      10            D4 (GPIO2)
+ * SPI MOSI    MOSI         11 / ICSP-4   D7 (GPIO13)
+ * SPI MISO    MISO         12 / ICSP-1   D6 (GPIO12)
+ * SPI SCK     SCK          13 / ICSP-3   D5 (GPIO14)
+ */
 
-// 2. Raspberry Pi Server Address
-// User provided IP: 10.42.0.1
-const String serverUrl = "http://10.42.0.1:5000/rfid"; 
+#define RST_PIN D3 // Configurable, see typical pin layout above
+#define SS_PIN D4  // Configurable, see typical pin layout above
 
-// 3. RFID Pin Layout (ESP8266 / NodeMCU)
-#define RST_PIN  D3  // GPIO 0
-#define SS_PIN   D4  // GPIO 2
+MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance
 
-// --------------------------------------------------------------------------------
-
-MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
-String oldUidString = "";
-unsigned long lastScanTime = 0;
+// ======================= CONFIGURATION =======================
+const char *ssid = "YOUR_WIFI_SSID";
+const char *password = "YOUR_WIFI_PASSWORD";
+String serverUrl = "http://192.168.1.X:5000/rfid"; // UPDATE THIS IP
+// =============================================================
 
 void setup() {
   Serial.begin(115200);
-  
-  // Init SPI bus and RFID
-  SPI.begin(); 
-  rfid.PCD_Init(); 
+  delay(1000);
 
-  // Connect to Wi-Fi
+  // Init SPI bus
+  SPI.begin();
+  // Init MFRC522
+  mfrc522.PCD_Init();
+
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
   WiFi.begin(ssid, password);
-  Serial.println("\nConnecting to WiFi");
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("\nConnected to WiFi!");
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
 
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
   Serial.println("Ready to scan RFID tags...");
 }
 
 void loop() {
-  // 1. Check if a new card is present
-  if (!rfid.PICC_IsNewCardPresent()) return;
-  if (!rfid.PICC_ReadCardSerial()) return;
-
-  // 2. Read UID
-  String uidString = "";
-  for (byte i = 0; i < rfid.uid.size; i++) {
-    if (rfid.uid.uidByte[i] < 0x10) uidString += "0";
-    uidString += String(rfid.uid.uidByte[i], HEX);
-  }
-  uidString.toUpperCase();
-
-  // Debounce: Don't read the same card multiple times instantly
-  if (uidString == oldUidString && millis() - lastScanTime < 2000) {
-    rfid.PICC_HaltA();
-    rfid.PCD_StopCrypto1();
+  // Look for new cards
+  if (!mfrc522.PICC_IsNewCardPresent()) {
     return;
   }
-  
-  lastScanTime = millis();
-  oldUidString = uidString;
 
-  Serial.print("Scanned UID: ");
-  Serial.println(uidString);
+  // Select one of the cards
+  if (!mfrc522.PICC_ReadCardSerial()) {
+    return;
+  }
 
-  // 3. Send to Server
+  // Show UID on serial monitor
+  Serial.print("UID tag :");
+  String content = "";
+  for (byte i = 0; i < mfrc522.uid.size; i++) {
+    Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+    Serial.print(mfrc522.uid.uidByte[i], HEX);
+    content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+    content.concat(String(mfrc522.uid.uidByte[i], HEX));
+  }
+  Serial.println();
+  content.toUpperCase();
+
+  // Send to Server
   if (WiFi.status() == WL_CONNECTED) {
     WiFiClient client;
     HTTPClient http;
 
-    Serial.print("Sending to: ");
-    Serial.println(serverUrl);
-    
-    http.begin(client, serverUrl);
-    http.addHeader("Content-Type", "application/json");
+    Serial.print("[HTTP] begin...\n");
+    if (http.begin(client, serverUrl)) { // HTTP
+      http.addHeader("Content-Type", "application/json");
 
-    // Create JSON payload: {"uid": "YOUR_UID"}
-    String jsonPayload = "{\"uid\": \"" + uidString + "\"}";
-    
-    int httpResponseCode = http.POST(jsonPayload);
+      // Clean UID string (remove spaces)
+      String cleanUid = "";
+      for (int i = 0; i < content.length(); i++) {
+        if (content[i] != ' ')
+          cleanUid += content[i];
+      }
 
-    if (httpResponseCode > 0) {
-      String response = http.getString();
-      Serial.print("Server Response Code: ");
-      Serial.println(httpResponseCode);
-      Serial.println("Response: " + response);
+      String payload = "{\"uid\": \"" + cleanUid + "\"}";
+      Serial.print("[HTTP] POST payload: ");
+      Serial.println(payload);
+
+      int httpCode = http.POST(payload);
+
+      if (httpCode > 0) {
+        Serial.printf("[HTTP] POST... code: %d\n", httpCode);
+        if (httpCode == HTTP_CODE_OK || httpCode == 201) {
+          String payload = http.getString();
+          Serial.println(payload);
+        }
+      } else {
+        Serial.printf("[HTTP] POST... failed, error: %s\n",
+                      http.errorToString(httpCode).c_str());
+      }
+      http.end();
     } else {
-      Serial.print("Error on sending POST: ");
-      Serial.println(httpResponseCode);
+      Serial.printf("[HTTP} Unable to connect\n");
     }
-
-    http.end();
-  } else {
-    Serial.println("WiFi Disconnected");
   }
 
   // Halt PICC
-  rfid.PICC_HaltA();
-  rfid.PCD_StopCrypto1();
+  mfrc522.PICC_HaltA();
+  // Stop encryption on PCD
+  mfrc522.PCD_StopCrypto1();
+
+  // Wait a bit before next scan
+  delay(1000);
 }

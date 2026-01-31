@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Trolley - Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-50 font-sans flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900 text-white min-h-screen sticky top-0">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <i class="fas fa-user-shield text-indigo-400"></i> Admin
+            </h1>
+        </div>
+        <nav class="mt-6">
+            <a href="{{ url_for('admin') }}"
+                class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin_inventory') }}"
+                class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-box"></i> Inventory
+            </a>
+            <a href="{{ url_for('admin_sales') }}"
+                class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-shopping-bag"></i> Sales
+            </a>
+            <a href="{{ url_for('admin_settings') }}"
+                class="flex items-center gap-3 px-6 py-4 bg-indigo-600 text-white">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-slate-800">System Settings</h2>
+        </header>
+
+        <div class="max-w-2xl space-y-8">
+            <!-- Account Settings -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <i class="fas fa-lock text-indigo-500"></i> Security
+                </h3>
+
+                <form onsubmit="event.preventDefault(); alert('Settings saved (Simulated)!');" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Current Password</label>
+                        <input type="password"
+                            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">New Password</label>
+                            <input type="password"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Confirm Password</label>
+                            <input type="password"
+                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+                    <div class="pt-4">
+                        <button
+                            class="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700 transition">
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- System Preferences -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <i class="fas fa-sliders-h text-indigo-500"></i> Preferences
+                </h3>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                        <div>
+                            <h4 class="font-bold text-slate-700">Low Stock Alerts</h4>
+                            <p class="text-sm text-slate-500">Receive notifications when stock is low</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" checked class="sr-only peer">
+                            <div
+                                class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600">
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                        <div>
+                            <h4 class="font-bold text-slate-700">Daily Sales Report</h4>
+                            <p class="text-sm text-slate-500">Email summary at end of day</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer">
+                            <div
+                                class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600">
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logout -->
+            <button id="logoutBtn"
+                class="w-full bg-red-50 text-red-500 border border-red-100 p-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-100 hover:text-red-700 transition">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+            </button>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to sign out?')) {
+                try {
+                    const res = await fetch('/api/admin/logout', { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                        window.location.href = '/admin/login';
+                    }
+                } catch (e) {
+                    alert('Error logging out');
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

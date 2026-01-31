@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Trolley - Sales History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-50 font-sans flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900 text-white min-h-screen sticky top-0">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <i class="fas fa-user-shield text-indigo-400"></i> Admin
+            </h1>
+        </div>
+        <nav class="mt-6">
+            <a href="{{ url_for('admin') }}"
+                class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="{{ url_for('admin_inventory') }}"
+                class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-box"></i> Inventory
+            </a>
+            <a href="{{ url_for('admin_sales') }}" class="flex items-center gap-3 px-6 py-4 bg-indigo-600 text-white">
+                <i class="fas fa-shopping-bag"></i> Sales
+            </a>
+            <a href="{{ url_for('admin_settings') }}"
+                class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-slate-800">Sales History</h2>
+            <div class="flex items-center gap-4">
+                <button
+                    class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-100 transition">
+                    <i class="fas fa-download mr-2"></i> Export CSV
+                </button>
+            </div>
+        </header>
+
+        <!-- Sales Table -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold">
+                    <tr>
+                        <th class="px-6 py-4">Date</th>
+                        <th class="px-6 py-4">Items</th>
+                        <th class="px-6 py-4">Total Amount</th>
+                        <th class="px-6 py-4">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="sales-table-body" class="divide-y divide-slate-100">
+                    <!-- Sales will be loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const tableBody = document.getElementById('sales-table-body');
+            try {
+                const response = await fetch('/sales/history');
+                const sales = await response.json();
+
+                if (sales.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-slate-400 italic">No sales recorded yet.</td></tr>`;
+                    return;
+                }
+
+                // Sort by date descending (newest first)
+                sales.reverse();
+
+                tableBody.innerHTML = sales.map(sale => {
+                    const date = new Date(sale.timestamp).toLocaleString();
+                    const itemsSummary = sale.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+
+                    return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-6 py-4 text-slate-600 whitespace-nowrap">${date}</td>
+                        <td class="px-6 py-4 text-slate-800 font-medium max-w-md truncate" title="${itemsSummary}">
+                            ${itemsSummary}
+                        </td>
+                        <td class="px-6 py-4 font-bold text-green-600">₹${sale.total}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded-full bg-green-100 text-green-600 text-xs font-bold uppercase">Completed</span>
+                        </td>
+                    </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Error fetching sales:', err);
+                tableBody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-red-500">Failed to load sales history.</td></tr>`;
+            }
+        });
+    </script>
+</body>
+
+</html>

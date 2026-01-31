@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, session, redirect, url_for
+from jinja2 import ChoiceLoader, FileSystemLoader
 from datetime import datetime
+from functools import wraps
 import json
 import os
 
@@ -12,30 +14,113 @@ app = Flask(__name__,
             static_folder=BASE_DIR, 
             static_url_path='')
 
+# IMPORTANT: Add secret key for session management
+app.config['SECRET_KEY'] = 'smart-trolley-secret-key-12345'  # Change this in production
+
+app.jinja_loader = ChoiceLoader([
+    FileSystemLoader(CUSTOMER_TEMPLATE_DIR),
+    FileSystemLoader(ADMIN_TEMPLATE_DIR)
+])
+
 # Mock Data
 PRODUCTS = {
-    "52612D5C": {"id": "52612D5C", "name": "Rice Bag 5kg", "price": 320, "stock": 50, "category": "Grains", "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=100&q=80"},
-    "9917FEE4": {"id": "9917FEE4", "name": "Sunflower Oil 1L", "price": 180, "stock": 30, "category": "Oil", "image": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=100&q=80"},
-    "03563B38": {"id": "03563B38", "name": "Milk Packet 500ml", "price": 30, "stock": 100, "category": "Dairy", "image": "https://images.unsplash.com/photo-1550583724-125581828703?auto=format&fit=crop&w=100&q=80"},
-    "B3211839": {"id": "B3211839", "name": "Bread Loaf", "price": 45, "stock": 40, "category": "Bakery", "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=100&q=80"},
-    "83E69038": {"id": "83E69038", "name": "Sugar 1kg", "price": 55, "stock": 60, "category": "Grains", "image": "https://images.unsplash.com/photo-1581441363689-1f3c3c414635?auto=format&fit=crop&w=100&q=80"},
-    "435D1D39": {"id": "435D1D39", "name": "Tea Powder 250g", "price": 120, "stock": 25, "category": "Beverages", "image": "https://images.unsplash.com/photo-1544787210-228394c3d3e2?auto=format&fit=crop&w=100&q=80"},
-    "E3F72C39": {"id": "E3F72C39", "name": "Soap Bar", "price": 38, "stock": 80, "category": "Personal Care", "image": "https://images.unsplash.com/photo-1605264964528-06403738d6dc?auto=format&fit=crop&w=100&q=80"},
-    "079B3F55": {"id": "079B3F55", "name": "Biscuit Pack", "price": 25, "stock": 150, "category": "Snacks", "image": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=100&q=80"}
+    "03563B38": {"id": "03563B38", "name": "Milk Packet",    "unit": "500 ml", "price": 25,  "stock": 40, "category": "Dairy",    "image": "/customer-frontend/static/images/milk_packet.png"},
+    "079B3F55": {"id": "079B3F55", "name": "Biscuit Packet", "unit": "100 g",  "price": 30,  "stock": 50, "category": "Snacks",   "image": "/customer-frontend/static/images/biscuit_packet.png"},
+    "435D1D39": {"id": "435D1D39", "name": "Tea Powder",     "unit": "250 g",  "price": 160, "stock": 15, "category": "Beverages","image": "/customer-frontend/static/images/tea_powder.png"},
+    "52612D5C": {"id": "52612D5C", "name": "India Gate Basmati Rice", "unit": "5 kg",   "price": 360, "stock": 12, "category": "Grains",   "image": "/customer-frontend/static/images/india_gate_rice.png"},
+    "83E69038": {"id": "83E69038", "name": "Sugar",          "unit": "1 kg",   "price": 55,  "stock": 25, "category": "Grains",   "image": "/customer-frontend/static/images/sugar.png"},
+    "9917FEE4": {"id": "9917FEE4", "name": "Sunflower Oil",  "unit": "1 L",    "price": 140, "stock": 20, "category": "Oil",      "image": "/customer-frontend/static/images/sunflower_oil.png"},
+    "B3211839": {"id": "B3211839", "name": "Bread Loaf",     "unit": "400 g",  "price": 50,  "stock": 30, "category": "Bakery",   "image": "/customer-frontend/static/images/bread_loaf.png"},
+    "E3F72C39": {"id": "E3F72C39", "name": "Aashirvaad Atta", "unit": "1 kg",   "price": 45,  "stock": 22, "category": "Grains",   "image": "/customer-frontend/static/images/aashirvaad_atta.png"}
 }
 
 cart = {}
 sales_history = []
 
+# Admin credentials
+ADMIN_CREDENTIALS = {
+    "admin": "admin123"
+}
+
+# Login required decorator
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'admin_logged_in' not in session:
+            if request.is_json:
+                return jsonify({"status": "error", "message": "Authentication required"}), 401
+            return redirect(url_for('admin_login_page'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# ==================== AUTH ROUTES ====================
+
+@app.route('/admin/login', methods=['GET'])
+def admin_login_page():
+    """Display the animated supermarket login page"""
+    if 'admin_logged_in' in session:
+        return redirect(url_for('admin'))
+    return render_template("logi.html")  # <-- CHANGED TO logi.html
+
+@app.route('/api/admin/login', methods=['POST'])
+def admin_login():
+    """Handle login API"""
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+    
+    if not username or not password:
+        return jsonify({"success": False, "message": "Username and password required"}), 400
+    
+    if username in ADMIN_CREDENTIALS and ADMIN_CREDENTIALS[username] == password:
+        session['admin_logged_in'] = True
+        session['admin_username'] = username
+        return jsonify({
+            "success": True,
+            "message": "Login successful",
+            "redirect": "/admin"
+        })
+    else:
+        return jsonify({
+            "success": False,
+            "message": "Invalid credentials"
+        }), 401
+
+@app.route('/api/admin/logout', methods=['POST'])
+@login_required
+def admin_logout():
+    """Logout endpoint"""
+    session.pop('admin_logged_in', None)
+    session.pop('admin_username', None)
+    return jsonify({"success": True, "message": "Logged out successfully"})
+
+# ==================== EXISTING ROUTES ====================
+
 @app.route('/')
 def index():
-    return send_from_directory(CUSTOMER_TEMPLATE_DIR, "index.html")
+    return render_template("index.html")
 
 @app.route('/admin')
+@login_required
 def admin():
-    return send_from_directory(ADMIN_TEMPLATE_DIR, "admin.html")
+    return render_template("admin.html")
 
-# --- Customer APIs ---
+@app.route('/admin/inventory')
+@login_required
+def admin_inventory():
+    return render_template("inventory.html")
+
+@app.route('/admin/sales')
+@login_required
+def admin_sales():
+    return render_template("sales.html")
+
+@app.route('/admin/settings')
+@login_required
+def admin_settings():
+    return render_template("settings.html")
+
+# ==================== CUSTOMER APIs ====================
 
 @app.route('/products', methods=['GET'])
 def get_products():
@@ -57,6 +142,7 @@ def rfid():
         cart[uid] = {
             "id": uid,
             "name": product["name"],
+            "unit": product.get("unit", ""),
             "price": product["price"],
             "image": product["image"],
             "qty": 1
@@ -96,19 +182,19 @@ def checkout():
         "total": total
     }
     
-    # Update stock
     for uid, item in cart.items():
         if uid in PRODUCTS:
             PRODUCTS[uid]["stock"] = max(0, PRODUCTS[uid]["stock"] - item["qty"])
     
     sales_history.append(order)
-    cart = {} # Clear cart
+    cart = {}
     
     return jsonify({"status": "ok", "message": "Checkout successful", "order": order})
 
-# --- Admin APIs ---
+# ==================== ADMIN APIs (PROTECTED) ====================
 
 @app.route('/admin/data', methods=['GET'])
+@login_required
 def get_admin_data():
     total_sales = sum(order['total'] for order in sales_history)
     total_orders = len(sales_history)
@@ -123,12 +209,13 @@ def get_admin_data():
     })
 
 @app.route('/inventory', methods=['GET'])
+@login_required
 def get_inventory():
     return jsonify(PRODUCTS)
 
 @app.route('/sales/daily', methods=['GET'])
+@login_required
 def get_daily_sales():
-    # Mocking daily sales data (last 7 days)
     return jsonify([
         {"date": "2026-01-20", "amount": 1200},
         {"date": "2026-01-21", "amount": 1500},
@@ -140,6 +227,7 @@ def get_daily_sales():
     ])
 
 @app.route('/sales/monthly', methods=['GET'])
+@login_required
 def get_monthly_sales():
     return jsonify([
         {"month": "Aug", "amount": 45000},
@@ -150,7 +238,13 @@ def get_monthly_sales():
         {"month": "Jan", "amount": 68000}
     ])
 
+@app.route('/sales/history', methods=['GET'])
+@login_required
+def get_sales_history():
+    return jsonify(sales_history)
+
 @app.route('/chat', methods=['POST'])
+@login_required
 def chat():
     data = request.get_json()
     message = data.get("message", "").lower()
@@ -172,4 +266,4 @@ def chat():
     return jsonify({"reply": response})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
