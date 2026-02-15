@@ -42,8 +42,8 @@
             <div class="flex justify-between items-start mb-6">
                 <!-- Left: Welcome Text -->
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Welcome back, Shopper!</h1>
-                    <p class="text-gray-400 text-sm font-medium mt-1">Store #402 • Lane 4</p>
+                    <h1 class="text-2xl font-bold text-gray-900" data-i18n="welcomeBack">Welcome back, Shopper!</h1>
+                    <p class="text-gray-400 text-sm font-medium mt-1" data-i18n="storeLane">Store #402 • Lane 4</p>
                 </div>
 
                 <!-- Center: Search Bar (Expanded) -->
@@ -55,7 +55,7 @@
                         </div>
                         <input type="text" id="search-input"
                             class="block w-full pl-12 pr-12 py-3.5 bg-gray-100 border-none rounded-2xl text-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-medium"
-                            placeholder="Search for milk, bread, pasta...">
+                            placeholder="Search for milk, bread, pasta..." data-i18n="searchPlaceholder">
                         <div class="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer">
                             <i class="fas fa-microphone text-gray-400 hover:text-blue-500 transition-colors"></i>
                         </div>
@@ -68,7 +68,7 @@
                     <button
                         class="flex items-center gap-2 bg-red-50 text-red-500 hover:bg-red-100 px-4 py-2 rounded-full transition-colors font-semibold text-sm">
                         <i class="far fa-question-circle"></i>
-                        Help
+                        <span data-i18n="help">Help</span>
                     </button>
 
                     <!-- Status Icons -->
@@ -97,31 +97,31 @@
                         <div
                             class="bg-teal-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded absolute -top-2 -left-2 transform -rotate-6 shadow-sm border border-white">
                             FRESH</div>
-                        <i class="fas fa-check-circle"></i> Best Seller
+                        <i class="fas fa-check-circle"></i> <span data-i18n="bestSeller">Best Seller</span>
                     </button>
                     <!-- Special Offers -->
                     <button
                         class="category-btn flex items-center gap-2 px-5 py-2.5 bg-white text-gray-600 hover:bg-orange-50 hover:text-orange-500 hover:ring-1 hover:ring-orange-100 rounded-xl font-medium shadow-sm transition-all min-w-max"
                         data-category="promo">
-                        <i class="fas fa-tag text-orange-400"></i> Special Offers
+                        <i class="fas fa-tag text-orange-400"></i> <span data-i18n="specialOffers">Special Offers</span>
                     </button>
                     <!-- Fresh Produce -->
                     <button
                         class="category-btn flex items-center gap-2 px-5 py-2.5 bg-white text-gray-600 hover:bg-green-50 hover:text-green-600 hover:ring-1 hover:ring-green-100 rounded-xl font-medium shadow-sm transition-all min-w-max"
                         data-category="fresh">
-                        <i class="fas fa-leaf text-green-500"></i> Fresh Produce
+                        <i class="fas fa-leaf text-green-500"></i> <span data-i18n="freshProduce">Fresh Produce</span>
                     </button>
                     <!-- Bakery -->
                     <button
                         class="category-btn flex items-center gap-2 px-5 py-2.5 bg-white text-gray-600 hover:bg-yellow-50 hover:text-yellow-600 hover:ring-1 hover:ring-yellow-100 rounded-xl font-medium shadow-sm transition-all min-w-max"
                         data-category="bakery">
-                        <i class="fas fa-bread-slice text-yellow-500"></i> Bakery
+                        <i class="fas fa-bread-slice text-yellow-500"></i> <span data-i18n="bakery">Bakery</span>
                     </button>
                     <!-- Beverages -->
                     <button
                         class="category-btn flex items-center gap-2 px-5 py-2.5 bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:ring-1 hover:ring-blue-100 rounded-xl font-medium shadow-sm transition-all min-w-max"
                         data-category="beverages">
-                        <i class="fas fa-glass-water text-blue-500"></i> Beverages
+                        <i class="fas fa-glass-water text-blue-500"></i> <span data-i18n="beverages">Beverages</span>
                     </button>
                 </div>
 
@@ -137,8 +137,9 @@
             <div id="category-view"
                 class="absolute inset-0 flex flex-col bg-gray-50 overflow-y-auto p-8 pb-32 hidden opacity-0 transition-opacity duration-300">
                 <div class="max-w-4xl mx-auto w-full">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Browse Categories</h2>
-                    <p class="text-gray-500 mb-8">Explore our wide range of products</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2" data-i18n="browseCategories">Browse Categories
+                    </h2>
+                    <p class="text-gray-500 mb-8" data-i18n="exploreProducts">Explore our wide range of products</p>
 
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
                         <!-- Promo -->
@@ -149,9 +150,9 @@
                                 <i class="fas fa-tags"></i>
                             </div>
                             <div class="text-center">
-                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-orange-600">Special Offers
-                                </h3>
-                                <p class="text-xs text-gray-400 mt-1">Huge discounts</p>
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-orange-600"
+                                    data-i18n="specialOffers">Special Offers</h3>
+                                <p class="text-xs text-gray-400 mt-1" data-i18n="hugeDiscounts">Huge discounts</p>
                             </div>
                         </button>
 
@@ -163,9 +164,9 @@
                                 <i class="fas fa-carrot"></i>
                             </div>
                             <div class="text-center">
-                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-green-600">Fresh Produce
-                                </h3>
-                                <p class="text-xs text-gray-400 mt-1">Farm fresh veg & fruits</p>
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-green-600"
+                                    data-i18n="freshProduce">Fresh Produce</h3>
+                                <p class="text-xs text-gray-400 mt-1" data-i18n="farmFresh">Farm fresh veg & fruits</p>
                             </div>
                         </button>
 
@@ -177,8 +178,9 @@
                                 <i class="fas fa-bread-slice"></i>
                             </div>
                             <div class="text-center">
-                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-yellow-600">Bakery</h3>
-                                <p class="text-xs text-gray-400 mt-1">Freshly baked goods</p>
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-yellow-600"
+                                    data-i18n="bakery">Bakery</h3>
+                                <p class="text-xs text-gray-400 mt-1" data-i18n="freshlyBaked">Freshly baked goods</p>
                             </div>
                         </button>
 
@@ -190,8 +192,9 @@
                                 <i class="fas fa-wine-bottle"></i>
                             </div>
                             <div class="text-center">
-                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-blue-600">Beverages</h3>
-                                <p class="text-xs text-gray-400 mt-1">Juices, sodas & water</p>
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-blue-600"
+                                    data-i18n="beverages">Beverages</h3>
+                                <p class="text-xs text-gray-400 mt-1" data-i18n="juicesSodas">Juices, sodas & water</p>
                             </div>
                         </button>
 
@@ -203,8 +206,9 @@
                                 <i class="fas fa-cookie-bite"></i>
                             </div>
                             <div class="text-center">
-                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-purple-600">Snacks</h3>
-                                <p class="text-xs text-gray-400 mt-1">Chips & chocolates</p>
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-purple-600"
+                                    data-i18n="snacks">Snacks</h3>
+                                <p class="text-xs text-gray-400 mt-1" data-i18n="chipsChocolates">Chips & chocolates</p>
                             </div>
                         </button>
 
@@ -216,8 +220,10 @@
                                 <i class="fas fa-home"></i>
                             </div>
                             <div class="text-center">
-                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-indigo-600">Household</h3>
-                                <p class="text-xs text-gray-400 mt-1">Cleaning & essentials</p>
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-indigo-600"
+                                    data-i18n="household">Household</h3>
+                                <p class="text-xs text-gray-400 mt-1" data-i18n="cleaningEssentials">Cleaning &
+                                    essentials</p>
                             </div>
                         </button>
                     </div>
@@ -231,23 +237,63 @@
                 <button onclick="handleNav('home')" id="nav-home"
                     class="nav-item active flex flex-col items-center gap-1 text-blue-500 font-medium p-2 transition-colors">
                     <i class="fas fa-home text-xl"></i>
-                    <span class="text-[10px] font-bold">Home</span>
+                    <span class="text-[10px] font-bold" data-i18n="home">Home</span>
                 </button>
                 <button onclick="handleNav('category')" id="nav-category"
                     class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors p-2">
                     <i class="fas fa-th-large text-xl"></i>
-                    <span class="text-[10px] font-medium">Category</span>
+                    <span class="text-[10px] font-medium" data-i18n="category">Category</span>
                 </button>
                 <button onclick="handleNav('map')" id="nav-map"
                     class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors p-2">
                     <i class="fas fa-map text-xl"></i>
-                    <span class="text-[10px] font-medium">Map</span>
+                    <span class="text-[10px] font-medium" data-i18n="map">Map</span>
                 </button>
                 <button onclick="handleNav('account')" id="nav-account"
                     class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors p-2">
                     <i class="fas fa-user text-xl"></i>
-                    <span class="text-[10px] font-medium">Account</span>
+                    <span class="text-[10px] font-medium" data-i18n="account">Account</span>
                 </button>
+                <button onclick="handleNav('language')" id="nav-language"
+                    class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors p-2"
+                    title="Switch language">
+                    <i class="fas fa-language text-xl"></i>
+                    <span class="text-[10px] font-medium" data-i18n="language">Language</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Language Picker Modal (changes entire app language) -->
+        <div id="language-modal"
+            class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-50 flex items-center justify-center transition-all opacity-0">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl transform scale-95 transition-all mx-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-gray-900" data-i18n="selectLanguage">Select Language</h3>
+                    <button onclick="closeModal('language-modal')" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 mb-4" data-i18n="languageNote">Your preference will be saved</p>
+                <div class="space-y-2">
+                    <button type="button" onclick="applyLanguageAndClose('en')"
+                        class="language-option w-full flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 text-left font-medium transition-all">🇬🇧
+                        English</button>
+                    <button type="button" onclick="applyLanguageAndClose('hi')"
+                        class="language-option w-full flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 text-left font-medium transition-all">🇮🇳
+                        हिन्दी (Hindi)</button>
+                    <button type="button" onclick="applyLanguageAndClose('ta')"
+                        class="language-option w-full flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 text-left font-medium transition-all">🇮🇳
+                        தமிழ் (Tamil)</button>
+                    <button type="button" onclick="applyLanguageAndClose('te')"
+                        class="language-option w-full flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 text-left font-medium transition-all">🇮🇳
+                        తెలుగు (Telugu)</button>
+                    <button type="button" onclick="applyLanguageAndClose('kn')"
+                        class="language-option w-full flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 text-left font-medium transition-all">🇮🇳
+                        ಕನ್ನಡ (Kannada)</button>
+                    <button type="button" onclick="applyLanguageAndClose('ml')"
+                        class="language-option w-full flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 text-left font-medium transition-all">🇮🇳
+                        മലയാളം (Malayalam)</button>
+                </div>
             </div>
         </div>
 
@@ -256,7 +302,7 @@
             class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-50 flex items-center justify-center transition-all opacity-0">
             <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl transform scale-95 transition-all mx-4">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold text-gray-900">My Profile</h3>
+                    <h3 class="text-xl font-bold text-gray-900" data-i18n="myProfile">My Profile</h3>
                     <button onclick="closeModal('account-modal')" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times text-xl"></i>
                     </button>
@@ -267,7 +313,7 @@
                         class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-500 text-3xl mb-3 shadow-inner">
                         <i class="fas fa-user"></i>
                     </div>
-                    <h4 class="font-bold text-gray-800 text-lg">Guest Shopper</h4>
+                    <h4 class="font-bold text-gray-800 text-lg" data-i18n="guestShopper">Guest Shopper</h4>
                     <p class="text-sm text-gray-500">ID: #G-8823</p>
                 </div>
 
@@ -278,7 +324,7 @@
                             <i class="fas fa-history"></i>
                         </div>
                         <div class="flex-1">
-                            <p class="text-xs font-bold text-gray-400 uppercase">Last Visit</p>
+                            <p class="text-xs font-bold text-gray-400 uppercase" data-i18n="lastVisit">Last Visit</p>
                             <p class="font-bold text-gray-800">Oct 22, 2026</p>
                         </div>
                     </div>
@@ -288,14 +334,16 @@
                             <i class="fas fa-coins"></i>
                         </div>
                         <div class="flex-1">
-                            <p class="text-xs font-bold text-gray-400 uppercase">Loyalty Points</p>
+                            <p class="text-xs font-bold text-gray-400 uppercase" data-i18n="loyaltyPoints">Loyalty
+                                Points</p>
                             <p class="font-bold text-gray-800">120 pts</p>
                         </div>
                     </div>
                 </div>
 
                 <button onclick="closeModal('account-modal')"
-                    class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">
+                    class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition"
+                    data-i18n="close">
                     Close
                 </button>
             </div>
@@ -317,7 +365,7 @@
         <div class="px-6 py-6 border-b border-gray-50 flex justify-between items-center bg-white sticky top-0 z-10">
             <div class="flex items-center gap-3">
                 <i class="fas fa-shopping-basket text-blue-500 text-xl"></i>
-                <h2 class="text-xl font-bold text-gray-900">Basket</h2>
+                <h2 class="text-xl font-bold text-gray-900" data-i18n="basket">Basket</h2>
             </div>
             <div class="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md shadow-blue-200"
                 id="basket-count-badge">
@@ -338,18 +386,18 @@
         <div class="p-6 bg-white border-t border-gray-50 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] z-20">
             <div class="space-y-3 mb-6">
                 <div class="flex justify-between text-gray-400 font-medium text-sm">
-                    <span>Subtotal</span>
+                    <span data-i18n="subtotal">Subtotal</span>
                     <span id="basket-subtotal" class="text-gray-600">₹0.00</span>
                 </div>
                 <div class="flex justify-between text-gray-400 font-medium text-sm">
-                    <span>Tax</span>
+                    <span data-i18n="tax">Tax</span>
                     <span id="basket-tax" class="text-gray-600">₹0.00</span>
                 </div>
                 <div class="flex justify-between text-gray-400 font-medium text-sm" id="basket-discount-row">
                     <!-- Discount injected here -->
                 </div>
                 <div class="flex justify-between items-end pt-2">
-                    <span class="text-lg font-bold text-gray-800">Total</span>
+                    <span class="text-lg font-bold text-gray-800" data-i18n="total">Total</span>
                     <span id="basket-total" class="text-2xl font-black text-blue-500">₹0.00</span>
                 </div>
             </div>
@@ -357,7 +405,7 @@
             <button id="checkout-btn"
                 class="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-200 transform active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
                 <i class="fas fa-qrcode"></i>
-                Scan to Checkout
+                <span data-i18n="scanToCheckout">Scan to Checkout</span>
             </button>
         </div>
     </aside>
@@ -368,10 +416,11 @@
     <div id="payment-modal"
         class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-50 flex items-center justify-center transition-all opacity-0">
         <div class="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl transform scale-95 transition-all">
-            <h3 class="text-2xl font-bold text-gray-900 mb-6">Checkout</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-6" data-i18n="checkout">Checkout</h3>
 
             <div class="bg-blue-50 rounded-2xl p-6 mb-6 text-center border border-blue-100">
-                <p class="text-blue-400 font-bold text-xs uppercase tracking-wide mb-1">Total Amount</p>
+                <p class="text-blue-400 font-bold text-xs uppercase tracking-wide mb-1" data-i18n="totalAmount">Total
+                    Amount</p>
                 <div id="payment-modal-total">
                     <p class="text-4xl font-black text-blue-600">₹0.00</p>
                 </div>
@@ -401,10 +450,11 @@
 
             <div class="flex gap-4">
                 <button onclick="closePaymentModal()"
-                    class="flex-1 py-3 text-gray-500 font-bold hover:bg-gray-100 rounded-xl transition">Cancel</button>
+                    class="flex-1 py-3 text-gray-500 font-bold hover:bg-gray-100 rounded-xl transition"
+                    data-i18n="cancel">Cancel</button>
                 <button onclick="processPayment()"
-                    class="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition">Pay
-                    Now</button>
+                    class="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition"
+                    data-i18n="payNow">Pay Now</button>
             </div>
         </div>
     </div>
@@ -416,11 +466,12 @@
             <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <i class="fas fa-check text-4xl text-green-500"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h3>
-            <p class="text-gray-500 mb-8">Thank you for shopping with Smart Trolley. Your receipt has been sent.</p>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2" data-i18n="paymentSuccessful">Payment Successful!</h3>
+            <p class="text-gray-500 mb-8" data-i18n="thankYou">Thank you for shopping with Smart Trolley. Your receipt
+                has been sent.</p>
             <button onclick="closeSuccessModal()"
-                class="w-full py-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg shadow-green-200 transition">Start
-                New Shop</button>
+                class="w-full py-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg shadow-green-200 transition"
+                data-i18n="startNewShop">Start New Shop</button>
         </div>
     </div>
 
@@ -439,11 +490,11 @@
                     class="w-16 h-16 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl shadow-lg">
                     <i class="fas fa-bullhorn"></i>
                 </div>
-                <h3 class="text-2xl font-black text-gray-900 mb-2">Announcement</h3>
+                <h3 class="text-2xl font-black text-gray-900 mb-2" data-i18n="announcement">Announcement</h3>
                 <p id="promo-text" class="text-gray-600 mb-6 font-medium">Special offer coming your way!</p>
                 <button onclick="closeModal('promo-modal')"
-                    class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition">Got
-                    it!</button>
+                    class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition"
+                    data-i18n="gotIt">Got it!</button>
             </div>
             <!-- Progress Bar -->
             <div class="h-1 bg-gray-100 w-full relative">
@@ -573,6 +624,7 @@
 
         <!-- Scripts -->
         <script src="/customer-frontend/static/js/api.js"></script>
+        <script src="/customer-frontend/static/js/i18n.js"></script>
         <script src="/customer-frontend/static/js/main.js"></script>
 </body>
 

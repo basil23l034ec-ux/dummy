@@ -210,18 +210,19 @@ function renderProducts(products) {
         const card = document.createElement('div');
         card.className = "bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow relative border border-transparent hover:border-blue-50 group flex flex-col";
 
+        const displayName = (typeof getProductName === 'function' ? getProductName(p.id, p.name) : p.name);
         card.innerHTML = `
             <!-- Badges -->
             ${isHot ? `<div class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm z-10">HOT</div>` : ''}
             
             <!-- Image Area -->
             <div class="h-40 w-full mb-4 flex items-center justify-center bg-gray-50 rounded-xl overflow-hidden relative group-hover:bg-white transition-colors">
-                <img src="${p.image}" alt="${p.name}" class="h-32 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500">
+                <img src="${p.image}" alt="${displayName}" class="h-32 object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-500">
             </div>
 
             <!-- Content -->
             <div class="flex-1 flex flex-col">
-                <h3 class="font-bold text-gray-800 text-sm leading-tight mb-1 line-clamp-2 h-10">${p.name}</h3>
+                <h3 class="font-bold text-gray-800 text-sm leading-tight mb-1 line-clamp-2 h-10">${displayName}</h3>
                 <p class="text-xs text-gray-400 font-medium mb-3">${p.unit || 'Each'}</p>
                 
                 <div class="mt-auto flex justify-between items-end">
@@ -259,22 +260,27 @@ function renderCart(cartData) {
     // Update Badge
     const countBadge = document.getElementById('basket-count-badge');
     const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
-    countBadge.textContent = `${totalQty} Items`;
+    const itemsLabel = (typeof getTranslation === 'function' ? getTranslation('items') : 'Items');
+    countBadge.textContent = `${totalQty} ${itemsLabel}`;
 
     // Update List
     const list = document.getElementById('basket-items');
 
     if (items.length === 0) {
+        const emptyMsg = (typeof getTranslation === 'function' ? getTranslation('basketEmpty') : 'Your basket is empty');
+        const scanMsg = (typeof getTranslation === 'function' ? getTranslation('scanItems') : 'Scan items to add them');
         list.innerHTML = `
             <div class="flex flex-col items-center justify-center h-64 text-gray-300 animate-fade-in">
                 <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
                     <i class="fas fa-shopping-basket text-2xl text-gray-300"></i>
                 </div>
-                <p class="font-medium text-sm">Your basket is empty</p>
-                <p class="text-xs text-gray-400 mt-1">Scan items to add them</p>
+                <p class="font-medium text-sm">${emptyMsg}</p>
+                <p class="text-xs text-gray-400 mt-1">${scanMsg}</p>
             </div>`;
     } else {
-        list.innerHTML = items.map(item => `
+        list.innerHTML = items.map(item => {
+            const itemDisplayName = (typeof getProductName === 'function' ? getProductName(item.id, item.name) : item.name);
+            return `
             <div class="flex gap-4 p-3 bg-white rounded-xl border border-gray-100 shadow-sm relative group hover:border-blue-100 transition-colors">
                 <!-- Image -->
                 <div class="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -284,7 +290,7 @@ function renderCart(cartData) {
                 <!-- Info -->
                 <div class="flex-1 min-w-0">
                     <div class="flex justify-between items-start">
-                        <h4 class="font-bold text-gray-800 text-sm truncate pr-6">${item.name}</h4>
+                        <h4 class="font-bold text-gray-800 text-sm truncate pr-6">${itemDisplayName}</h4>
                         <button onclick="removeFromCart('${item.id}')" class="text-gray-300 hover:text-red-500 transition-colors absolute top-2 right-2 p-1">
                             <i class="fas fa-times text-xs"></i>
                         </button>
@@ -301,7 +307,8 @@ function renderCart(cartData) {
                     </div>
                 </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 
     // Update Footer Calculations
@@ -310,7 +317,7 @@ function renderCart(cartData) {
 
     // Apply Discount if exists
     let discountAmount = 0;
-    let discountLabel = "No Discount";
+    let discountLabel = (typeof getTranslation === 'function' ? getTranslation('noDiscount') : 'No Discount');
 
     // Check if user has won a discount
     const wonDiscount = localStorage.getItem('spin_discount');
@@ -332,7 +339,7 @@ function renderCart(cartData) {
     document.getElementById('basket-subtotal').textContent = `₹${total.toFixed(2)}`;
     document.getElementById('basket-tax').textContent = `₹${tax.toFixed(2)}`;
 
-    // Add discount row
+    // Add discount row (discountLabel may already be translated from above)
     const discountRow = document.getElementById('basket-discount-row');
     if (discountRow) {
         discountRow.innerHTML = `
@@ -426,6 +433,8 @@ function handleNav(page) {
         switchView('category');
     } else if (page === 'account') {
         openModal('account-modal');
+    } else if (page === 'language') {
+        openModal('language-modal');
     }
 }
 
@@ -545,6 +554,14 @@ function closeModal(id) {
     }, 300);
 }
 
+// Apply language app-wide and close language picker modal
+function applyLanguageAndClose(langCode) {
+    if (typeof changeLanguage === 'function') changeLanguage(langCode);
+    closeModal('language-modal');
+    var sel = document.getElementById('language-selector');
+    if (sel) sel.value = langCode;
+}
+
 // --- Payment Flows ---
 
 function setupPaymentToggles() {
@@ -652,6 +669,12 @@ function updateClock() {
     if (timeEl) timeEl.textContent = timeString;
     if (dateEl) dateEl.textContent = dateString;
 }
+
+// When language changes, re-render product names and cart
+window.onLanguageChange = function () {
+    if (typeof allProducts !== 'undefined' && allProducts && allProducts.length) renderProducts(allProducts);
+    if (typeof refreshCart === 'function') refreshCart();
+};
 
 // Global simulation helper for the dev panel
 window.simulateScan = addToCart;
