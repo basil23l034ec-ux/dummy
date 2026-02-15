@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Spin Wheel Test</title>
+    <script>
+        async function testSpinWheel() {
+            console.log("Testing spin wheel...");
+
+            // 1. Check API
+            const response = await fetch('/api/promotions/current');
+            const promo = await response.json();
+            console.log("Promotion data:", promo);
+            document.getElementById('api-result').textContent = JSON.stringify(promo, null, 2);
+
+            // 2. Check session storage
+            const hasSeenSpinWheel = sessionStorage.getItem('spin_wheel_shown');
+            console.log("Session storage 'spin_wheel_shown':", hasSeenSpinWheel);
+            document.getElementById('session-result').textContent = hasSeenSpinWheel || 'null';
+
+            // 3. Check type
+            if (promo.type === 'spin_wheel') {
+                document.getElementById('type-result').textContent = "✓ Spin wheel type detected!";
+                document.getElementById('type-result').style.color = 'green';
+
+                if (!hasSeenSpinWheel) {
+                    document.getElementById('show-result').textContent = "✓ Should show spin wheel!";
+                    document.getElementById('show-result').style.color = 'green';
+                } else {
+                    document.getElementById('show-result').textContent = "✗ Already shown this session";
+                    document.getElementById('show-result').style.color = 'orange';
+                }
+            } else {
+                document.getElementById('type-result').textContent = "✗ Not a spin wheel promotion";
+                document.getElementById('type-result').style.color = 'red';
+            }
+        }
+
+        function clearSession() {
+            sessionStorage.removeItem('spin_wheel_shown');
+            alert('Session cleared! Refresh the customer page.');
+        }
+    </script>
+</head>
+
+<body style="font-family: Arial; padding: 20px;">
+    <h1>🎰 Spin Wheel Diagnostic</h1>
+
+    <button onclick="testSpinWheel()" style="padding: 10px 20px; font-size: 16px; margin-bottom: 20px;">
+        Run Test
+    </button>
+
+    <button onclick="clearSession()"
+        style="padding: 10px 20px; font-size: 16px; margin-bottom: 20px; background: orange; color: white; border: none;">
+        Clear Session Storage
+    </button>
+
+    <h2>Results:</h2>
+
+    <h3>1. API Response:</h3>
+    <pre id="api-result" style="background: #f0f0f0; padding: 10px; border-radius: 5px;">Not tested yet</pre>
+
+    <h3>2. Session Storage (spin_wheel_shown):</h3>
+    <p id="session-result" style="background: #f0f0f0; padding: 10px; border-radius: 5px;">Not tested yet</p>
+
+    <h3>3. Type Check:</h3>
+    <p id="type-result" style="background: #f0f0f0; padding: 10px; border-radius: 5px;">Not tested yet</p>
+
+    <h3>4. Should Show?</h3>
+    <p id="show-result" style="background: #f0f0f0; padding: 10px; border-radius: 5px;">Not tested yet</p>
+
+    <hr>
+    <h2>Quick Fixes:</h2>
+    <ol>
+        <li>Click "Clear Session Storage" button above</li>
+        <li>Open customer page: <a href="/customer-frontend/">http://localhost:5001/customer-frontend/</a></li>
+        <li>Open browser console (F12) and look for [SPIN WHEEL] messages</li>
+    </ol>
+</body>
+
+</html>

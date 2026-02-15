@@ -36,21 +36,12 @@ async function checkPromo() {
         console.log("[PROMO CHECK] Received:", promo);
         console.log("[PROMO CHECK] Spin wheel shown this session:", spinWheelShownThisSession);
 
-        // Handle Spin Wheel - Show ONCE per session when customer first uses trolley
+        // Handle Spin Wheel - Show EVERY TIME page loads (no session check)
         if (promo.type === 'spin_wheel' && !spinWheelShownThisSession) {
-            // Check if user has already seen spin wheel in this session
-            const hasSeenSpinWheel = sessionStorage.getItem('spin_wheel_shown');
-            console.log("[SPIN WHEEL] Has seen (sessionStorage):", hasSeenSpinWheel);
-
-            if (!hasSeenSpinWheel) {
-                // First time this session - show spin wheel
-                console.log("[SPIN WHEEL] Showing for first time!");
-                sessionStorage.setItem('spin_wheel_shown', 'true');
-                spinWheelShownThisSession = true;
-                showSpinWheel(promo.title, promo.content);
-            } else {
-                console.log("[SPIN WHEEL] Already shown, skipping.");
-            }
+            // Show spin wheel on every page load!
+            console.log("[SPIN WHEEL] Showing spin wheel!");
+            spinWheelShownThisSession = true; // Prevent multiple shows in same page load
+            showSpinWheel(promo.title, promo.content);
             return; // Don't process as banner
         }
 

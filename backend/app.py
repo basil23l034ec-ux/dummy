@@ -289,6 +289,10 @@ def emergency_reset_trolley():
 def index():
     return render_template("index.html")
 
+@app.route('/test-spin')
+def test_spin():
+    return render_template("test-spin.html")
+
 @app.route('/admin')
 @login_required
 def admin():
