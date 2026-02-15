@@ -31,24 +31,32 @@ let spinWheelShownThisSession = false;
 async function checkPromo() {
     try {
         const response = await fetch('/api/promotions/current');
-        const promo = await response.json();
+        const data = await response.json(); // Now returns { spin_wheel: ..., banner: ... }
 
-        console.log("[PROMO CHECK] Received:", promo);
-        console.log("[PROMO CHECK] Spin wheel shown this session:", spinWheelShownThisSession);
-
-        // Handle Spin Wheel - Show EVERY TIME page loads (no session check)
-        if (promo.type === 'spin_wheel' && !spinWheelShownThisSession) {
-            // Show spin wheel on every page load!
-            console.log("[SPIN WHEEL] Showing spin wheel!");
-            spinWheelShownThisSession = true; // Prevent multiple shows in same page load
-            showSpinWheel(promo.title, promo.content);
-            return; // Don't process as banner
+        // 1. Check Spin Wheel (Highest Priority, show once per page load)
+        if (data.spin_wheel && !spinWheelShownThisSession) {
+            console.log("[SPIN WHEEL] Found active spin wheel promotion");
+            spinWheelShownThisSession = true;
+            showSpinWheel(data.spin_wheel.title, data.spin_wheel.content);
+            return; // Don't show banner immediately after showing wheel
         }
 
-        // Handle Banner Ads - Rotate every 30 minutes
-        if (promo.type === 'banner' && promo.id !== lastPromoId) {
-            lastPromoId = promo.id;
-            showBannerPromo(promo.title, promo.content.image);
+        // 2. Check Banner (Show if spin wheel already shown or not active)
+        // Only show if content exists
+        if (data.banner && data.banner.id !== lastPromoId) {
+            // Ensure Spin Wheel is not currently open before showing banner
+            const spinModal = document.getElementById('spin-wheel-modal');
+            const isSpinWheelOpen = spinModal && !spinModal.classList.contains('hidden');
+
+            // Also check current banner is closed
+            const promoModal = document.getElementById('promo-modal');
+            const isPromoOpen = promoModal && !promoModal.classList.contains('hidden');
+
+            if (!isSpinWheelOpen && !isPromoOpen) {
+                console.log("[BANNER] Rotating to new banner:", data.banner.title);
+                lastPromoId = data.banner.id;
+                showBannerPromo(data.banner.title, data.banner.content.image);
+            }
         }
     } catch (e) {
         console.error("Promo Check Failed:", e);

@@ -396,34 +396,45 @@ def update_promotion_last_shown(id):
 def get_current_promotion():
     """
     Smart promotion system:
-    1. If a spin wheel exists and is active, return it (customer frontend will show it ONCE per session)
-    2. Otherwise, rotate banner ads every 30 minutes
+    Returns a composite object allowing the frontend to prioritize:
+    {
+        "spin_wheel": { ... } or None,
+        "banner": { ... } or None
+    }
     """
     promos = list_promotions()
     active_promos = [p for p in promos if p['active']]
     
+    result = {
+        "spin_wheel": None,
+        "banner": None
+    }
+    
     if not active_promos:
-        return None
+        return result
     
-    # Separate by type
+    # Get Spin Wheel (Highest Priority)
     spin_wheels = [p for p in active_promos if p['type'] == 'spin_wheel']
-    banners = [p for p in active_promos if p['type'] == 'banner']
-    
-    # Priority 1: Return first active spin wheel (customer side will handle showing it once)
     if spin_wheels:
         # Return the most recently created spin wheel
         spin_wheels_sorted = sorted(spin_wheels, key=lambda x: x.get('created_at') or '1970-01-01', reverse=True)
-        return spin_wheels_sorted[0]
+        result['spin_wheel'] = spin_wheels_sorted[0]
     
-    # Priority 2: Rotate banner ads every 30 minutes
+    # Get Banner (Time-based Rotation)
+    banners = [p for p in active_promos if p['type'] == 'banner']
     if banners:
         # Sort by last_shown (oldest first) to ensure fair rotation
         banners_sorted = sorted(banners, key=lambda x: x.get('last_shown') or '1970-01-01')
         
         # Calculate which banner to show based on 30-minute intervals
+        # Use a faster rotation for demo purposes if needed, keeping 30m for now
         idx = int(time.time() // 1800) % len(banners)
         selected = banners_sorted[idx]
+        
+        # Only update last_shown occasionally to avoid DB thrashing on every poll
+        # or rely on frontend to trigger an 'impression' API (skipping for simplicity)
         update_promotion_last_shown(selected['id'])
-        return selected
+        
+        result['banner'] = selected
     
-    return None
+    return result
