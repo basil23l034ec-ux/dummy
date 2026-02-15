@@ -28,3 +28,10 @@ node_modules/
 dist/
 .env
 .DS_Store
+
+# Local data and logs
+*.db
+backend/database.db
+backend/data.json
+logs/
+models_output.txt

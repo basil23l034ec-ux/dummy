@@ -32,12 +32,18 @@ async function removeItem(uid) {
     return await response.json();
 }
 
-async function checkout() {
+async function checkout(discountPercent = 0) {
     const response = await fetch(`${API_BASE_URL}/checkout`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify({ discount: discountPercent })
     });
+    return await response.json();
+}
+
+async function fetchSettings() {
+    const response = await fetch(`${API_BASE_URL}/api/settings`);
     return await response.json();
 }

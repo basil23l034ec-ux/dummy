@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Trolley - Alerts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0b0b15',
+                            card: '#181824',
+                            border: '#232332',
+                            text: '#ffffff',
+                            muted: '#9ca3af',
+                            accent: '#ccf381',
+                            purple: '#8b5cf6',
+                            blue: '#3b82f6'
+                        }
+                    },
+                    borderRadius: { '3xl': '1.5rem', '4xl': '2rem' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-slate-50 dark:bg-dark-bg font-sans flex text-slate-900 dark:text-dark-text transition-colors duration-300">
+    <aside class="w-64 bg-white dark:bg-dark-card text-slate-600 dark:text-dark-muted min-h-screen sticky top-0 border-r border-slate-200 dark:border-dark-border transition-colors duration-300 flex flex-col z-20">
+        <div class="p-8">
+            <h1 class="text-2xl font-black flex items-center gap-2 tracking-tight dark:text-white">
+                <div class="w-8 h-8 bg-white dark:bg-white text-dark-bg rounded-lg flex items-center justify-center text-sm"><i class="fas fa-shopping-cart"></i></div>
+                Smart Trolley
+            </h1>
+        </div>
+        <nav class="mt-2 px-4 space-y-2">
+            <a href="{{ url_for('admin') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-chart-pie"></i> Overview</a>
+            <a href="{{ url_for('admin_trolleys') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-cart-arrow-down"></i> Live Trolleys</a>
+            <a href="{{ url_for('admin_customers') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-users"></i> Customers & Bills</a>
+            <a href="{{ url_for('admin_inventory') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-box"></i> Inventory</a>
+            <a href="{{ url_for('admin_sales') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-shopping-bag"></i> Sales & Order</a>
+            <a href="{{ url_for('admin_reports') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-bar-chart"></i> Reports</a>
+            <a href="{{ url_for('admin_alerts') }}" class="flex items-center gap-3 px-4 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold transition-all shadow-lg"><i class="fas fa-bell"></i> Alerts</a>
+            <a href="{{ url_for('admin_settings') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-cog"></i> Settings</a>
+        </nav>
+        <div class="mt-auto p-4"></div>
+    </aside>
+
+    <main class="flex-1 p-8 transition-colors duration-300">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-black text-slate-800 dark:text-white">Alerts & Notifications</h2>
+                <p class="text-slate-500 dark:text-dark-muted text-sm mt-1">Important alerts and system notifications</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme()" class="w-12 h-12 bg-white dark:bg-dark-card text-slate-600 dark:text-white rounded-full flex items-center justify-center shadow-lg hover:bg-slate-50 dark:hover:bg-dark-border transition">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block text-dark-accent"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="alerts-list" class="space-y-4">
+            <!-- Alerts loaded via JS -->
+        </div>
+        <p id="alerts-empty" class="hidden text-center text-slate-500 dark:text-dark-muted py-12">No alerts at the moment.</p>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            initTheme();
+            const container = document.getElementById('alerts-list');
+            const emptyEl = document.getElementById('alerts-empty');
+            try {
+                const res = await fetch('/api/admin/alerts');
+                const data = await res.json();
+                const alerts = data.alerts || [];
+                if (alerts.length === 0) {
+                    container.classList.add('hidden');
+                    emptyEl.classList.remove('hidden');
+                    return;
+                }
+                emptyEl.classList.add('hidden');
+                const typeStyles = {
+                    inventory: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-700 text-orange-600 dark:text-orange-400',
+                    payment: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700 text-red-600 dark:text-red-400',
+                    system: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-600 dark:text-blue-400'
+                };
+                const iconClass = {
+                    inventory: 'fas fa-exclamation-triangle',
+                    payment: 'fas fa-shopping-cart',
+                    system: 'fas fa-clock'
+                };
+                container.innerHTML = alerts.map(a => {
+                    const style = typeStyles[a.type] || typeStyles.inventory;
+                    const icon = iconClass[a.type] || iconClass.inventory;
+                    return `
+                    <div class="bg-white dark:bg-dark-card rounded-2xl border border-slate-200 dark:border-dark-border overflow-hidden transition-colors duration-300">
+                        <div class="p-4 flex items-start gap-4 border-l-4 ${a.type === 'inventory' ? 'border-orange-500' : a.type === 'payment' ? 'border-red-500' : 'border-blue-500'}">
+                            <div class="p-2.5 rounded-lg bg-slate-100 dark:bg-dark-bg ${a.type === 'inventory' ? 'text-orange-600 dark:text-orange-400' : a.type === 'payment' ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400'}">
+                                <i class="${icon} w-5 h-5"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-slate-800 dark:text-white">${a.message}</p>
+                                <p class="text-xs text-slate-500 dark:text-dark-muted mt-1">${a.time}</p>
+                            </div>
+                            <button onclick="this.closest('.bg-white').remove()" class="text-slate-500 dark:text-dark-muted hover:text-slate-800 dark:hover:text-white text-sm font-bold">Mark as read</button>
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = '';
+                emptyEl.textContent = 'Failed to load alerts.';
+                emptyEl.classList.remove('hidden');
+            }
+            function initTheme() {
+                const isDark = localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', isDark);
+            }
+            window.toggleTheme = function () {
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            };
+        });
+    </script>
+</body>
+
+</html>

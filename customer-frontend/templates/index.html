@@ -1,87 +1,579 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Trolley - Customer</title>
+    <!-- Tailwind CSS (Direct CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/customer-frontend/static/css/style.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+        }
+
+        /* Hide scrollbar for category list */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans">
-    <nav class="bg-indigo-600 text-white p-4 shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold flex items-center gap-2">
-                <i class="fas fa-shopping-cart"></i> SmartTrolley
-            </h1>
-            <div id="cart-info" class="flex items-center gap-4">
-                <span id="cart-count" class="bg-white text-indigo-600 rounded-full px-2 py-1 text-xs font-bold">0</span>
-                <span id="cart-total" class="font-semibold">₹0.00</span>
+
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full relative z-0">
+
+        <!-- Header Section -->
+        <header class="bg-white px-8 py-6 shadow-sm z-20 flex-shrink-0">
+            <div class="flex justify-between items-start mb-6">
+                <!-- Left: Welcome Text -->
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Welcome back, Shopper!</h1>
+                    <p class="text-gray-400 text-sm font-medium mt-1">Store #402 • Lane 4</p>
+                </div>
+
+                <!-- Center: Search Bar (Expanded) -->
+                <div class="flex-1 max-w-2xl mx-12">
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i
+                                class="fas fa-search text-gray-400 text-lg group-focus-within:text-blue-500 transition-colors"></i>
+                        </div>
+                        <input type="text" id="search-input"
+                            class="block w-full pl-12 pr-12 py-3.5 bg-gray-100 border-none rounded-2xl text-gray-600 placeholder-gray-400 focus:ring-2 focus:ring-blue-100 focus:bg-white transition-all font-medium"
+                            placeholder="Search for milk, bread, pasta...">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer">
+                            <i class="fas fa-microphone text-gray-400 hover:text-blue-500 transition-colors"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Actions & Status -->
+                <div class="flex items-center gap-6">
+                    <!-- Help Button -->
+                    <button
+                        class="flex items-center gap-2 bg-red-50 text-red-500 hover:bg-red-100 px-4 py-2 rounded-full transition-colors font-semibold text-sm">
+                        <i class="far fa-question-circle"></i>
+                        Help
+                    </button>
+
+                    <!-- Status Icons -->
+                    <div class="flex items-center gap-3 text-gray-400 font-medium text-sm">
+                        <span id="current-time">10:42 AM</span>
+                        <span id="current-date" class="text-xs text-gray-300 mx-1">Oct 24</span>
+                        <i class="fas fa-wifi"></i>
+                        <i class="fas fa-battery-full text-green-500 text-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Views Container -->
+        <div class="flex-1 relative overflow-hidden">
+
+            <!-- HOME VIEW -->
+            <div id="home-view" class="absolute inset-0 flex flex-col transition-all duration-300">
+                <!-- Categories Bar (Sticky Top of Home) -->
+                <div
+                    class="bg-white px-8 pb-4 shadow-sm z-10 flex items-center gap-4 overflow-x-auto scrollbar-hide flex-shrink-0">
+                    <!-- Best Seller -->
+                    <button
+                        class="category-btn active flex items-center gap-2 px-5 py-2.5 bg-teal-50 text-teal-600 rounded-xl font-bold shadow-sm ring-1 ring-teal-100 min-w-max"
+                        data-category="best-seller">
+                        <div
+                            class="bg-teal-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded absolute -top-2 -left-2 transform -rotate-6 shadow-sm border border-white">
+                            FRESH</div>
+                        <i class="fas fa-check-circle"></i> Best Seller
+                    </button>
+                    <!-- Special Offers -->
+                    <button
+                        class="category-btn flex items-center gap-2 px-5 py-2.5 bg-white text-gray-600 hover:bg-orange-50 hover:text-orange-500 hover:ring-1 hover:ring-orange-100 rounded-xl font-medium shadow-sm transition-all min-w-max"
+                        data-category="promo">
+                        <i class="fas fa-tag text-orange-400"></i> Special Offers
+                    </button>
+                    <!-- Fresh Produce -->
+                    <button
+                        class="category-btn flex items-center gap-2 px-5 py-2.5 bg-white text-gray-600 hover:bg-green-50 hover:text-green-600 hover:ring-1 hover:ring-green-100 rounded-xl font-medium shadow-sm transition-all min-w-max"
+                        data-category="fresh">
+                        <i class="fas fa-leaf text-green-500"></i> Fresh Produce
+                    </button>
+                    <!-- Bakery -->
+                    <button
+                        class="category-btn flex items-center gap-2 px-5 py-2.5 bg-white text-gray-600 hover:bg-yellow-50 hover:text-yellow-600 hover:ring-1 hover:ring-yellow-100 rounded-xl font-medium shadow-sm transition-all min-w-max"
+                        data-category="bakery">
+                        <i class="fas fa-bread-slice text-yellow-500"></i> Bakery
+                    </button>
+                    <!-- Beverages -->
+                    <button
+                        class="category-btn flex items-center gap-2 px-5 py-2.5 bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:ring-1 hover:ring-blue-100 rounded-xl font-medium shadow-sm transition-all min-w-max"
+                        data-category="beverages">
+                        <i class="fas fa-glass-water text-blue-500"></i> Beverages
+                    </button>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="flex-1 overflow-y-auto p-8 pt-6 pb-32" id="main-scroll-area">
+                    <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                        <!-- Products injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- CATEGORY VIEW (Grid) -->
+            <div id="category-view"
+                class="absolute inset-0 flex flex-col bg-gray-50 overflow-y-auto p-8 pb-32 hidden opacity-0 transition-opacity duration-300">
+                <div class="max-w-4xl mx-auto w-full">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Browse Categories</h2>
+                    <p class="text-gray-500 mb-8">Explore our wide range of products</p>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                        <!-- Promo -->
+                        <button onclick="selectCategory('promo')"
+                            class="bg-white p-6 rounded-3xl shadow-sm hover:shadow-lg transition-all flex flex-col items-center gap-4 group border border-transparent hover:border-orange-200">
+                            <div
+                                class="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center text-orange-500 text-3xl group-hover:scale-110 transition-transform shadow-inner">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                            <div class="text-center">
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-orange-600">Special Offers
+                                </h3>
+                                <p class="text-xs text-gray-400 mt-1">Huge discounts</p>
+                            </div>
+                        </button>
+
+                        <!-- Fresh -->
+                        <button onclick="selectCategory('fresh')"
+                            class="bg-white p-6 rounded-3xl shadow-sm hover:shadow-lg transition-all flex flex-col items-center gap-4 group border border-transparent hover:border-green-200">
+                            <div
+                                class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center text-green-500 text-3xl group-hover:scale-110 transition-transform shadow-inner">
+                                <i class="fas fa-carrot"></i>
+                            </div>
+                            <div class="text-center">
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-green-600">Fresh Produce
+                                </h3>
+                                <p class="text-xs text-gray-400 mt-1">Farm fresh veg & fruits</p>
+                            </div>
+                        </button>
+
+                        <!-- Bakery -->
+                        <button onclick="selectCategory('bakery')"
+                            class="bg-white p-6 rounded-3xl shadow-sm hover:shadow-lg transition-all flex flex-col items-center gap-4 group border border-transparent hover:border-yellow-200">
+                            <div
+                                class="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center text-yellow-500 text-3xl group-hover:scale-110 transition-transform shadow-inner">
+                                <i class="fas fa-bread-slice"></i>
+                            </div>
+                            <div class="text-center">
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-yellow-600">Bakery</h3>
+                                <p class="text-xs text-gray-400 mt-1">Freshly baked goods</p>
+                            </div>
+                        </button>
+
+                        <!-- Beverages -->
+                        <button onclick="selectCategory('beverages')"
+                            class="bg-white p-6 rounded-3xl shadow-sm hover:shadow-lg transition-all flex flex-col items-center gap-4 group border border-transparent hover:border-blue-200">
+                            <div
+                                class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 text-3xl group-hover:scale-110 transition-transform shadow-inner">
+                                <i class="fas fa-wine-bottle"></i>
+                            </div>
+                            <div class="text-center">
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-blue-600">Beverages</h3>
+                                <p class="text-xs text-gray-400 mt-1">Juices, sodas & water</p>
+                            </div>
+                        </button>
+
+                        <!-- Snacks (Mock) -->
+                        <button onclick="selectCategory('snacks')"
+                            class="bg-white p-6 rounded-3xl shadow-sm hover:shadow-lg transition-all flex flex-col items-center gap-4 group border border-transparent hover:border-purple-200">
+                            <div
+                                class="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center text-purple-500 text-3xl group-hover:scale-110 transition-transform shadow-inner">
+                                <i class="fas fa-cookie-bite"></i>
+                            </div>
+                            <div class="text-center">
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-purple-600">Snacks</h3>
+                                <p class="text-xs text-gray-400 mt-1">Chips & chocolates</p>
+                            </div>
+                        </button>
+
+                        <!-- Household (Mock) -->
+                        <button onclick="selectCategory('household')"
+                            class="bg-white p-6 rounded-3xl shadow-sm hover:shadow-lg transition-all flex flex-col items-center gap-4 group border border-transparent hover:border-indigo-200">
+                            <div
+                                class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-500 text-3xl group-hover:scale-110 transition-transform shadow-inner">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div class="text-center">
+                                <h3 class="font-bold text-gray-800 text-lg group-hover:text-indigo-600">Household</h3>
+                                <p class="text-xs text-gray-400 mt-1">Cleaning & essentials</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
 
-    <main class="container mx-auto p-6 flex justify-center">
-        <!-- Cart Section -->
-        <div class="w-full max-w-2xl">
-            <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-24 border border-gray-100">
-                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                    <i class="fas fa-shopping-basket text-indigo-500"></i> Your Cart
-                </h2>
-                
-                <div id="cart-items" class="space-y-4 mb-6 max-h-[400px] overflow-y-auto pr-2">
-                    <!-- Cart items will be loaded here -->
-                    <p class="text-gray-500 text-center py-8">Your cart is empty. Scan an item to start!</p>
-                </div>
-
-                <div class="border-t pt-6 space-y-3">
-                    <div class="flex justify-between text-gray-600">
-                        <span>Subtotal</span>
-                        <span id="subtotal">₹0.00</span>
-                    </div>
-                    <div class="flex justify-between text-gray-600">
-                        <span>Tax (0%)</span>
-                        <span>₹0.00</span>
-                    </div>
-                    <div class="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t">
-                        <span>Total</span>
-                        <span id="total-amount">₹0.00</span>
-                    </div>
-                </div>
-
-                <button id="checkout-btn" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold mt-8 hover:bg-indigo-700 transition shadow-lg shadow-indigo-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Proceed to Checkout
+        <!-- Floating Bottom Navigation -->
+        <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30">
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-2 flex items-center gap-8 px-8">
+                <button onclick="handleNav('home')" id="nav-home"
+                    class="nav-item active flex flex-col items-center gap-1 text-blue-500 font-medium p-2 transition-colors">
+                    <i class="fas fa-home text-xl"></i>
+                    <span class="text-[10px] font-bold">Home</span>
                 </button>
-
-                <!-- RFID Simulation (For Demo) -->
-                <div class="mt-8 p-4 bg-gray-100 rounded-xl">
-                    <p class="text-xs font-bold text-gray-400 uppercase mb-3">Simulation Mode (RFID)</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="simulateScan('52612D5C')" class="text-xs bg-white border p-2 rounded hover:bg-gray-50">Scan Rice</button>
-                        <button onclick="simulateScan('9917FEE4')" class="text-xs bg-white border p-2 rounded hover:bg-gray-50">Scan Oil</button>
-                        <button onclick="simulateScan('03563B38')" class="text-xs bg-white border p-2 rounded hover:bg-gray-50">Scan Milk</button>
-                        <button onclick="simulateScan('B3211839')" class="text-xs bg-white border p-2 rounded hover:bg-gray-50">Scan Bread</button>
-                    </div>
-                </div>
+                <button onclick="handleNav('category')" id="nav-category"
+                    class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors p-2">
+                    <i class="fas fa-th-large text-xl"></i>
+                    <span class="text-[10px] font-medium">Category</span>
+                </button>
+                <button onclick="handleNav('map')" id="nav-map"
+                    class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors p-2">
+                    <i class="fas fa-map text-xl"></i>
+                    <span class="text-[10px] font-medium">Map</span>
+                </button>
+                <button onclick="handleNav('account')" id="nav-account"
+                    class="nav-item flex flex-col items-center gap-1 text-gray-400 hover:text-gray-600 transition-colors p-2">
+                    <i class="fas fa-user text-xl"></i>
+                    <span class="text-[10px] font-medium">Account</span>
+                </button>
             </div>
         </div>
+
+        <!-- Account Modal -->
+        <div id="account-modal"
+            class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-50 flex items-center justify-center transition-all opacity-0">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl transform scale-95 transition-all mx-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">My Profile</h3>
+                    <button onclick="closeModal('account-modal')" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="flex flex-col items-center mb-6">
+                    <div
+                        class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-500 text-3xl mb-3 shadow-inner">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 text-lg">Guest Shopper</h4>
+                    <p class="text-sm text-gray-500">ID: #G-8823</p>
+                </div>
+
+                <div class="space-y-3 mb-6">
+                    <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                        <div
+                            class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-green-500">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs font-bold text-gray-400 uppercase">Last Visit</p>
+                            <p class="font-bold text-gray-800">Oct 22, 2026</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-xl">
+                        <div
+                            class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-purple-500">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-xs font-bold text-gray-400 uppercase">Loyalty Points</p>
+                            <p class="font-bold text-gray-800">120 pts</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="closeModal('account-modal')"
+                    class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition">
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- Generic Toast/Notification -->
+        <div id="toast-notification"
+            class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl z-50 flex items-center gap-3 transition-all duration-300 opacity-0 translate-y-[-20px] pointer-events-none">
+            <i id="toast-icon" class="fas fa-info-circle text-yellow-400"></i>
+            <span id="toast-message" class="font-medium text-sm">Notification</span>
+        </div>
+
     </main>
 
-    <!-- Success Modal -->
-    <div id="success-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-[100]">
-        <div class="bg-white p-8 rounded-3xl max-w-sm w-full text-center shadow-2xl scale-95 transition-transform">
-            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-check text-4xl"></i>
+    <!-- Right Sidebar: Basket -->
+    <aside id="basket-container"
+        class="hidden w-[400px] bg-white border-l border-gray-100 flex flex-col z-10 shadow-xl relative">
+        <!-- Basket Header -->
+        <div class="px-6 py-6 border-b border-gray-50 flex justify-between items-center bg-white sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-shopping-basket text-blue-500 text-xl"></i>
+                <h2 class="text-xl font-bold text-gray-900">Basket</h2>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">Order Placed!</h3>
-            <p class="text-gray-600 mb-8">Thank you for shopping with Smart Trolley. Your receipt has been generated.</p>
-            <button onclick="closeModal()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition">
-                Start New Shop
+            <div class="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md shadow-blue-200"
+                id="basket-count-badge">
+                0 Items
+            </div>
+        </div>
+
+        <!-- Basket Items List -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-4" id="basket-items">
+            <!-- Empty State -->
+            <div class="flex flex-col items-center justify-center h-64 text-gray-300">
+                <i class="fas fa-shopping-basket text-4xl mb-4 text-gray-200"></i>
+                <p>Your basket is empty</p>
+            </div>
+        </div>
+
+        <!-- Basket Footer (Total & Checkout) -->
+        <div class="p-6 bg-white border-t border-gray-50 shadow-[0_-4px_20px_rgba(0,0,0,0.02)] z-20">
+            <div class="space-y-3 mb-6">
+                <div class="flex justify-between text-gray-400 font-medium text-sm">
+                    <span>Subtotal</span>
+                    <span id="basket-subtotal" class="text-gray-600">₹0.00</span>
+                </div>
+                <div class="flex justify-between text-gray-400 font-medium text-sm">
+                    <span>Tax</span>
+                    <span id="basket-tax" class="text-gray-600">₹0.00</span>
+                </div>
+                <div class="flex justify-between text-gray-400 font-medium text-sm" id="basket-discount-row">
+                    <!-- Discount injected here -->
+                </div>
+                <div class="flex justify-between items-end pt-2">
+                    <span class="text-lg font-bold text-gray-800">Total</span>
+                    <span id="basket-total" class="text-2xl font-black text-blue-500">₹0.00</span>
+                </div>
+            </div>
+
+            <button id="checkout-btn"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-blue-200 transform active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-qrcode"></i>
+                Scan to Checkout
             </button>
+        </div>
+    </aside>
+
+    <!-- Modals & Overlays -->
+
+    <!-- Payment Modal -->
+    <div id="payment-modal"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-50 flex items-center justify-center transition-all opacity-0">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl transform scale-95 transition-all">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Checkout</h3>
+
+            <div class="bg-blue-50 rounded-2xl p-6 mb-6 text-center border border-blue-100">
+                <p class="text-blue-400 font-bold text-xs uppercase tracking-wide mb-1">Total Amount</p>
+                <div id="payment-modal-total">
+                    <p class="text-4xl font-black text-blue-600">₹0.00</p>
+                </div>
+            </div>
+
+            <!-- Payment Switch (Sliding Glider Style) -->
+            <div class="comic-radio-group shadow-inner mb-8">
+                <input type="radio" name="payment" id="pay-upi" value="upi" checked />
+                <label for="pay-upi">
+                    <i class="fas fa-qrcode"></i> UPI
+                </label>
+
+                <input type="radio" name="payment" id="pay-card" value="card" />
+                <label for="pay-card">
+                    <i class="fas fa-credit-card"></i> Card
+                </label>
+
+                <div class="comic-glider"></div>
+            </div>
+
+            <div id="upi-qr-section" class="mb-6 flex flex-col items-center hidden">
+                <div class="bg-white p-3 rounded-xl border-2 border-dashed border-blue-200">
+                    <img id="upi-qr-image" src="" class="w-48 h-48 object-contain">
+                </div>
+                <p class="text-sm font-mono text-gray-500 mt-2">basilmuhammad627@oksbi</p>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="closePaymentModal()"
+                    class="flex-1 py-3 text-gray-500 font-bold hover:bg-gray-100 rounded-xl transition">Cancel</button>
+                <button onclick="processPayment()"
+                    class="flex-1 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition">Pay
+                    Now</button>
+            </div>
         </div>
     </div>
 
-    <script src="/customer-frontend/static/js/api.js"></script>
-    <script src="/customer-frontend/static/js/main.js"></script>
+    <!-- Success Modal -->
+    <div id="success-modal"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-50 flex items-center justify-center transition-all opacity-0">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl transform scale-95 transition-all text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check text-4xl text-green-500"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h3>
+            <p class="text-gray-500 mb-8">Thank you for shopping with Smart Trolley. Your receipt has been sent.</p>
+            <button onclick="closeSuccessModal()"
+                class="w-full py-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl shadow-lg shadow-green-200 transition">Start
+                New Shop</button>
+        </div>
+    </div>
+
+    <!-- Promo Modal (Ad) -->
+    <div id="promo-modal"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-[60] flex items-center justify-center transition-all opacity-0">
+        <div
+            class="bg-white rounded-3xl overflow-hidden w-full max-w-md shadow-2xl transform scale-95 transition-all text-center relative">
+            <button onclick="closeModal('promo-modal')"
+                class="absolute top-4 right-4 bg-black/20 text-white rounded-full p-2 hover:bg-black/40 transition">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="promo-image" src="" class="w-full h-48 object-cover hidden">
+            <div class="p-8">
+                <div
+                    class="w-16 h-16 bg-gradient-to-tr from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl shadow-lg">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3 class="text-2xl font-black text-gray-900 mb-2">Announcement</h3>
+                <p id="promo-text" class="text-gray-600 mb-6 font-medium">Special offer coming your way!</p>
+                <button onclick="closeModal('promo-modal')"
+                    class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition">Got
+                    it!</button>
+            </div>
+            <!-- Progress Bar -->
+            <div class="h-1 bg-gray-100 w-full relative">
+                <div
+                    class="absolute top-0 left-0 h-full bg-yellow-500 animate-[progress_10s_linear_forwards] w-full origin-left">
+                </div>
+            </div>
+        </div>
+        <!-- Sales History Modal -->
+        <div id="sales-modal"
+            class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden z-50 flex items-center justify-center transition-all opacity-0">
+            <div
+                class="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl transform scale-95 transition-all overflow-hidden flex flex-col max-h-[80vh]">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-gray-900">Your Orders</h3>
+                    <button onclick="closeModal('sales-modal')" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto" id="sales-history-list">
+                    <p class="text-center text-gray-400 py-8">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spin Wheel Modal (Special Offer) -->
+        <div id="spin-wheel-modal"
+            class="fixed inset-0 bg-black/60 backdrop-blur-md hidden z-[70] flex items-center justify-center transition-all opacity-0">
+            <div class="relative w-full max-w-md p-4 text-center transform scale-95 transition-all">
+                <!-- Close -->
+                <button onclick="closeModal('spin-wheel-modal')"
+                    class="absolute top-0 right-4 z-20 bg-white/20 hover:bg-white/40 text-white rounded-full w-10 h-10 flex items-center justify-center transition">
+                    <i class="fas fa-times"></i>
+                </button>
+
+                <!-- Wheel Container -->
+                <div
+                    class="relative w-80 h-80 mx-auto mb-8 bg-gradient-to-tr from-purple-600 to-blue-600 rounded-full p-2 shadow-2xl shadow-purple-500/50">
+                    <!-- Marker -->
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
+                        <div
+                            class="w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[30px] border-t-yellow-400 drop-shadow-lg">
+                        </div>
+                    </div>
+
+                    <div id="the-wheel"
+                        class="w-full h-full rounded-full bg-white relative overflow-hidden border-4 border-white shadow-inner">
+                        <!-- Segments (CSS Only for now, or SVG) -->
+                        <div class="w-full h-full" style="background: conic-gradient(
+                            #EF4444 0deg 60deg, 
+                            #F59E0B 60deg 120deg, 
+                            #10B981 120deg 180deg, 
+                            #3B82F6 180deg 240deg, 
+                            #6366F1 240deg 300deg, 
+                            #EC4899 300deg 360deg
+                        );"></div>
+
+                        <!-- Inner Circle -->
+                        <div
+                            class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center z-10 border-4 border-gray-100">
+                            <i class="fas fa-gift text-2xl text-purple-600 animate-pulse"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div id="spin-controls" class="space-y-4">
+                    <h2 class="text-3xl font-black text-white italic drop-shadow-md pb-2">SPIN & WIN!</h2>
+                    <p class="text-blue-100 mb-6 font-medium">Try your luck for an exclusive discount!</p>
+                    <button onclick="spinWheel()"
+                        class="px-10 py-4 bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-300 hover:to-yellow-500 text-white font-black text-xl rounded-full shadow-xl shadow-yellow-500/40 transform active:scale-95 transition-all w-full max-w-xs mx-auto border-b-4 border-yellow-700">
+                        SPIN NOW
+                    </button>
+                    <button onclick="closeModal('spin-wheel-modal')"
+                        class="text-white/60 text-sm hover:text-white mt-4 underline">Skip for now</button>
+                </div>
+
+                <!-- Result -->
+                <div id="spin-result"
+                    class="hidden text-center animate-fade-in bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                    <div class="text-5xl mb-4">🎉</div>
+                    <h3 class="text-2xl font-bold text-white mb-1">CONGRATULATIONS!</h3>
+                    <p class="text-blue-200 mb-4">You won:</p>
+                    <div class="text-4xl font-black text-yellow-400 mb-4 drop-shadow-md" id="spin-prize-text">10% OFF
+                    </div>
+                    <div class="bg-white/20 rounded-lg p-3 mb-4 inline-block px-6">
+                        <code class="text-white font-mono font-bold tracking-widest text-lg"
+                            id="spin-code">CODE123</code>
+                    </div>
+                    <p class="text-xs text-white/60 mb-6">Discount applied automatically at checkout!</p>
+                    <button onclick="closeModal('spin-wheel-modal')"
+                        class="w-full py-3 bg-white text-purple-600 font-bold rounded-xl hover:bg-gray-100 shadow-lg">Awesome!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testing: RFID Simulation Panel -->
+        <div class="fixed bottom-24 right-6 z-40 group">
+            <button
+                class="bg-gray-800 text-white w-12 h-12 rounded-full shadow-xl flex items-center justify-center hover:scale-110 transition-all peer">
+                <i class="fas fa-flask"></i>
+            </button>
+            <div
+                class="absolute bottom-16 right-0 bg-white p-4 rounded-xl shadow-2xl border border-gray-100 w-64 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all transform translate-y-2 group-hover:translate-y-0">
+                <p class="text-xs font-bold text-gray-400 uppercase mb-3">RFID Simulation (Dev Mode)</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="simulateScan('52612D5C')"
+                        class="text-xs bg-gray-50 border hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 p-2 rounded transition text-left">Scan
+                        Rice</button>
+                    <button onclick="simulateScan('9917FEE4')"
+                        class="text-xs bg-gray-50 border hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 p-2 rounded transition text-left">Scan
+                        Oil</button>
+                    <button onclick="simulateScan('03563B38')"
+                        class="text-xs bg-gray-50 border hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 p-2 rounded transition text-left">Scan
+                        Milk</button>
+                    <button onclick="simulateScan('B3211839')"
+                        class="text-xs bg-gray-50 border hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 p-2 rounded transition text-left">Scan
+                        Bread</button>
+                </div>
+                <button onclick="sessionStorage.clear(); localStorage.removeItem('spin_discount'); location.reload();"
+                    class="w-full mt-3 text-xs bg-orange-50 border border-orange-200 hover:bg-orange-100 text-orange-600 p-2 rounded transition font-bold">
+                    🔄 Reset Session (New Customer)
+                </button>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="/customer-frontend/static/js/api.js"></script>
+        <script src="/customer-frontend/static/js/main.js"></script>
 </body>
+
 </html>

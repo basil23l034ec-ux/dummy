@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Trolley - Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0b0b15',
+                            card: '#181824',
+                            border: '#232332',
+                            text: '#ffffff',
+                            muted: '#9ca3af',
+                            accent: '#ccf381',
+                            purple: '#8b5cf6',
+                            blue: '#3b82f6'
+                        }
+                    },
+                    borderRadius: { '3xl': '1.5rem', '4xl': '2rem' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-slate-50 dark:bg-dark-bg font-sans flex text-slate-900 dark:text-dark-text transition-colors duration-300">
+    <aside class="w-64 bg-white dark:bg-dark-card text-slate-600 dark:text-dark-muted min-h-screen sticky top-0 border-r border-slate-200 dark:border-dark-border transition-colors duration-300 flex flex-col z-20">
+        <div class="p-8">
+            <h1 class="text-2xl font-black flex items-center gap-2 tracking-tight dark:text-white">
+                <div class="w-8 h-8 bg-white dark:bg-white text-dark-bg rounded-lg flex items-center justify-center text-sm"><i class="fas fa-shopping-cart"></i></div>
+                Smart Trolley
+            </h1>
+        </div>
+        <nav class="mt-2 px-4 space-y-2">
+            <a href="{{ url_for('admin') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-chart-pie"></i> Overview</a>
+            <a href="{{ url_for('admin_trolleys') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-cart-arrow-down"></i> Live Trolleys</a>
+            <a href="{{ url_for('admin_customers') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-users"></i> Customers & Bills</a>
+            <a href="{{ url_for('admin_inventory') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-box"></i> Inventory</a>
+            <a href="{{ url_for('admin_sales') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-shopping-bag"></i> Sales & Order</a>
+            <a href="{{ url_for('admin_reports') }}" class="flex items-center gap-3 px-4 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold transition-all shadow-lg"><i class="fas fa-bar-chart"></i> Reports</a>
+            <a href="{{ url_for('admin_alerts') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-bell"></i> Alerts</a>
+            <a href="{{ url_for('admin_settings') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold"><i class="fas fa-cog"></i> Settings</a>
+        </nav>
+        <div class="mt-auto p-4"></div>
+    </aside>
+
+    <main class="flex-1 p-8 transition-colors duration-300">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-black text-slate-800 dark:text-white">Monthly Sales Report</h2>
+                <p class="text-slate-500 dark:text-dark-muted text-sm mt-1">Sales analytics and insights</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme()" class="w-12 h-12 bg-white dark:bg-dark-card text-slate-600 dark:text-white rounded-full flex items-center justify-center shadow-lg hover:bg-slate-50 dark:hover:bg-dark-border transition">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block text-dark-accent"></i>
+                </button>
+                <button onclick="window.print()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700 flex items-center gap-2">
+                    <i class="fas fa-download"></i> Download PDF
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white dark:bg-dark-card p-6 rounded-3xl shadow-lg border border-slate-200 dark:border-dark-border">
+                <p class="text-slate-500 dark:text-dark-muted text-sm font-bold uppercase mb-1">Total Sales (Overview)</p>
+                <p id="report-total-sales" class="text-2xl font-black text-slate-800 dark:text-white">₹0</p>
+                <p class="text-xs text-slate-500 dark:text-dark-muted mt-1">From analytics</p>
+            </div>
+            <div class="bg-white dark:bg-dark-card p-6 rounded-3xl shadow-lg border border-slate-200 dark:border-dark-border">
+                <p class="text-slate-500 dark:text-dark-muted text-sm font-bold uppercase mb-1">Total Orders Today</p>
+                <p id="report-total-orders" class="text-2xl font-black text-slate-800 dark:text-white">0</p>
+                <p class="text-xs text-slate-500 dark:text-dark-muted mt-1">Today's bills</p>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-dark-card p-6 rounded-3xl shadow-lg border border-slate-200 dark:border-dark-border mb-8">
+            <h3 class="font-bold text-slate-800 dark:text-white mb-4">Daily Sales Trend</h3>
+            <p class="text-slate-500 dark:text-dark-muted text-sm mb-4">Last 7 days</p>
+            <div class="relative w-full h-[300px]">
+                <canvas id="reportsDailyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-dark-card rounded-3xl shadow-lg border border-slate-200 dark:border-dark-border overflow-hidden">
+            <div class="p-6 border-b border-slate-200 dark:border-dark-border flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h3 class="font-bold text-slate-800 dark:text-white">Top Selling Products</h3>
+                    <p class="text-slate-500 dark:text-dark-muted text-sm mt-1">By revenue (all time)</p>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 dark:bg-dark-bg text-slate-500 dark:text-dark-muted text-xs uppercase font-bold">
+                        <tr>
+                            <th class="px-6 py-4">Product Name</th>
+                            <th class="px-6 py-4">Quantity Sold</th>
+                            <th class="px-6 py-4">Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="top-products-body" class="divide-y divide-slate-200 dark:divide-dark-border">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            initTheme();
+            let reportsChart = null;
+
+            try {
+                const [analyticsRes, topRes] = await Promise.all([
+                    fetch('/api/admin/analytics'),
+                    fetch('/api/admin/reports/top-products')
+                ]);
+                const analytics = await analyticsRes.json();
+                const topData = await topRes.json();
+
+                const stats = analytics.stats || {};
+                document.getElementById('report-total-sales').textContent = '₹' + (stats.total_sales || 0).toLocaleString('en-IN');
+                document.getElementById('report-total-orders').textContent = (stats.total_orders || 0).toLocaleString('en-IN');
+
+                const dailySales = analytics.daily_sales || [];
+                const isDark = document.documentElement.classList.contains('dark');
+                const gridColor = isDark ? '#232332' : '#e2e8f0';
+                const textColor = isDark ? '#9ca3af' : '#64748b';
+                const barColor = isDark ? '#ccf381' : '#4f46e5';
+
+                if (reportsChart) reportsChart.destroy();
+                const ctx = document.getElementById('reportsDailyChart').getContext('2d');
+                reportsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: dailySales.map(d => d.date),
+                        datasets: [{
+                            label: 'Sales (₹)',
+                            data: dailySales.map(d => d.amount),
+                            backgroundColor: barColor,
+                            borderRadius: 8,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor } },
+                            x: { grid: { display: false }, ticks: { color: textColor } }
+                        }
+                    }
+                });
+
+                const topProducts = topData.top_products || [];
+                const tbody = document.getElementById('top-products-body');
+                if (topProducts.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" class="px-6 py-8 text-center text-slate-500 dark:text-dark-muted">No sales data yet.</td></tr>';
+                } else {
+                    tbody.innerHTML = topProducts.slice(0, 10).map(p => `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-dark-bg transition">
+                            <td class="px-6 py-4 font-medium text-slate-800 dark:text-white">${p.name}</td>
+                            <td class="px-6 py-4 text-slate-800 dark:text-white">${p.quantity}</td>
+                            <td class="px-6 py-4 font-bold text-dark-accent">₹${Number(p.revenue).toLocaleString('en-IN')}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                console.error('Reports load error:', e);
+                document.getElementById('top-products-body').innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-red-500">Failed to load report data.</td></tr>';
+            }
+
+            function initTheme() {
+                const isDark = localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', isDark);
+            }
+            window.toggleTheme = function () {
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+                location.reload();
+            };
+        });
+    </script>
+</body>
+
+</html>

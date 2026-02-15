@@ -6,71 +6,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Trolley - Settings</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0b0b15',
+                            card: '#181824',
+                            border: '#232332',
+                            text: '#ffffff',
+                            muted: '#9ca3af',
+                            accent: '#ccf381',
+                            purple: '#8b5cf6',
+                            blue: '#3b82f6'
+                        }
+                    },
+                    borderRadius: {
+                        '3xl': '1.5rem',
+                        '4xl': '2rem'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
-<body class="bg-slate-50 font-sans flex">
+<body
+    class="bg-slate-50 dark:bg-dark-bg font-sans flex text-slate-900 dark:text-dark-text transition-colors duration-300">
     <!-- Sidebar -->
-    <aside class="w-64 bg-slate-900 text-white min-h-screen sticky top-0">
-        <div class="p-6">
-            <h1 class="text-2xl font-bold flex items-center gap-2">
-                <i class="fas fa-user-shield text-indigo-400"></i> Admin
+    <!-- Sidebar -->
+    <aside
+        class="w-64 bg-white dark:bg-dark-card text-slate-600 dark:text-dark-muted min-h-screen sticky top-0 border-r border-slate-200 dark:border-dark-border transition-colors duration-300 flex flex-col z-20">
+        <div class="p-8">
+            <h1 class="text-2xl font-black flex items-center gap-2 tracking-tight dark:text-white">
+                <div
+                    class="w-8 h-8 bg-white dark:bg-white text-dark-bg rounded-lg flex items-center justify-center text-sm">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                Smart Trolley
             </h1>
         </div>
-        <nav class="mt-6">
+        <nav class="mt-2 px-4 space-y-2">
             <a href="{{ url_for('admin') }}"
-                class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                <i class="fas fa-chart-line"></i> Dashboard
+                class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold">
+                <i class="fas fa-chart-pie"></i> Overview
+            </a>
+            <a href="{{ url_for('admin_trolleys') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold">
+                <i class="fas fa-cart-arrow-down"></i> Live Trolleys
+            </a>
+            <a href="{{ url_for('admin_customers') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold">
+                <i class="fas fa-users"></i> Customers & Bills
             </a>
             <a href="{{ url_for('admin_inventory') }}"
-                class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold">
                 <i class="fas fa-box"></i> Inventory
             </a>
             <a href="{{ url_for('admin_sales') }}"
-                class="flex items-center gap-3 px-6 py-4 text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                <i class="fas fa-shopping-bag"></i> Sales
+                class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold">
+                <i class="fas fa-shopping-bag"></i> Sales & Order
+            </a>
+            <a href="{{ url_for('admin_reports') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold">
+                <i class="fas fa-bar-chart"></i> Reports
+            </a>
+            <a href="{{ url_for('admin_alerts') }}"
+                class="flex items-center gap-3 px-4 py-3 rounded-full text-slate-500 dark:text-dark-muted hover:bg-slate-100 dark:hover:bg-dark-bg hover:text-slate-900 dark:hover:text-white transition font-bold">
+                <i class="fas fa-bell"></i> Alerts
             </a>
             <a href="{{ url_for('admin_settings') }}"
-                class="flex items-center gap-3 px-6 py-4 bg-indigo-600 text-white">
+                class="flex items-center gap-3 px-4 py-3 rounded-full bg-slate-900 dark:bg-white text-white dark:text-dark-bg font-bold transition-all shadow-lg">
                 <i class="fas fa-cog"></i> Settings
             </a>
         </nav>
+
+        <!-- Upgrade Promo -->
+        <div class="mt-auto p-4">
+            <!-- Space for future links -->
+        </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-8">
+    <main class="flex-1 p-8 transition-colors duration-300">
         <header class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl font-bold text-slate-800">System Settings</h2>
+            <div>
+                <h2 class="text-3xl font-black text-slate-800 dark:text-white transition-colors duration-300">Settings
+                </h2>
+                <p class="text-slate-500 dark:text-dark-muted font-medium mt-1">Manage your account and preferences</p>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme()"
+                    class="w-12 h-12 bg-white dark:bg-dark-card text-slate-600 dark:text-white rounded-full flex items-center justify-center shadow-lg hover:bg-slate-50 dark:hover:bg-dark-border transition">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block text-dark-accent"></i>
+                </button>
+            </div>
         </header>
 
         <div class="max-w-2xl space-y-8">
             <!-- Account Settings -->
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                    <i class="fas fa-lock text-indigo-500"></i> Security
+            <!-- Account Settings -->
+            <div
+                class="bg-white dark:bg-dark-card p-8 rounded-[2rem] shadow-xl border border-slate-200 dark:border-dark-border transition-colors duration-300">
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-sm">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    Security
                 </h3>
 
-                <form onsubmit="event.preventDefault(); alert('Settings saved (Simulated)!');" class="space-y-4">
+                <form onsubmit="event.preventDefault(); alert('Settings saved (Simulated)!');" class="space-y-6">
                     <div>
-                        <label class="block text-sm font-medium text-slate-600 mb-1">Current Password</label>
+                        <label
+                            class="block text-xs font-bold uppercase text-slate-500 dark:text-dark-muted mb-2">Current
+                            Password</label>
                         <input type="password"
-                            class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-indigo-500">
+                            class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-dark-accent transition">
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-slate-600 mb-1">New Password</label>
+                            <label
+                                class="block text-xs font-bold uppercase text-slate-500 dark:text-dark-muted mb-2">New
+                                Password</label>
                             <input type="password"
-                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-indigo-500">
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-dark-accent transition">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-600 mb-1">Confirm Password</label>
+                            <label
+                                class="block text-xs font-bold uppercase text-slate-500 dark:text-dark-muted mb-2">Confirm
+                                Password</label>
                             <input type="password"
-                                class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-indigo-500">
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-dark-bg border border-slate-200 dark:border-dark-border text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-dark-accent transition">
                         </div>
                     </div>
-                    <div class="pt-4">
+                    <div class="pt-2">
                         <button
-                            class="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700 transition">
+                            class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-lg font-bold hover:shadow-lg hover:scale-105 transition border border-transparent">
                             Update Password
                         </button>
                     </div>
@@ -78,34 +165,44 @@
             </div>
 
             <!-- System Preferences -->
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                    <i class="fas fa-sliders-h text-indigo-500"></i> Preferences
+            <!-- System Preferences -->
+            <div
+                class="bg-white dark:bg-dark-card p-8 rounded-[2rem] shadow-xl border border-slate-200 dark:border-dark-border transition-colors duration-300">
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center text-sm">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    Preferences
                 </h3>
 
                 <div class="space-y-4">
-                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                    <div
+                        class="flex items-center justify-between p-4 bg-slate-50 dark:bg-dark-bg rounded-xl border border-slate-200 dark:border-dark-border transition">
                         <div>
-                            <h4 class="font-bold text-slate-700">Low Stock Alerts</h4>
-                            <p class="text-sm text-slate-500">Receive notifications when stock is low</p>
+                            <h4 class="font-bold text-slate-800 dark:text-white">Low Stock Alerts</h4>
+                            <p class="text-xs text-slate-500 dark:text-dark-muted mt-0.5">Receive notifications when
+                                stock is low</p>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" checked class="sr-only peer">
                             <div
-                                class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600">
+                                class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-accent">
                             </div>
                         </label>
                     </div>
 
-                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                    <div
+                        class="flex items-center justify-between p-4 bg-slate-50 dark:bg-dark-bg rounded-xl border border-slate-200 dark:border-dark-border transition">
                         <div>
-                            <h4 class="font-bold text-slate-700">Daily Sales Report</h4>
-                            <p class="text-sm text-slate-500">Email summary at end of day</p>
+                            <h4 class="font-bold text-slate-800 dark:text-white">Daily Sales Report</h4>
+                            <p class="text-xs text-slate-500 dark:text-dark-muted mt-0.5">Email summary at end of day
+                            </p>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer">
                             <div
-                                class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600">
+                                class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-dark-accent">
                             </div>
                         </label>
                     </div>
@@ -114,13 +211,32 @@
 
             <!-- Logout -->
             <button id="logoutBtn"
-                class="w-full bg-red-50 text-red-500 border border-red-100 p-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-100 hover:text-red-700 transition">
+                class="w-full bg-red-900/20 text-red-400 border border-red-500/20 p-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-900/30 hover:text-red-300 transition">
                 <i class="fas fa-sign-out-alt"></i> Sign Out
             </button>
         </div>
     </main>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+        });
+
+        // Theme Init Function
+        function initTheme() {
+            const isDark = localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        window.toggleTheme = function () {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             if (confirm('Are you sure you want to sign out?')) {
                 try {
