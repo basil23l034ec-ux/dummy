@@ -244,17 +244,20 @@ function updateConnectIcon() {
 
     // Remove all state classes
     navConnect.classList.remove('text-gray-400', 'text-blue-500', 'text-green-500', 'text-orange-500');
-    connectIcon.classList.remove('fa-bluetooth', 'fa-bluetooth-b', 'fa-check-circle', 'fa-exclamation-triangle');
+    connectIcon.classList.remove('fa-wifi', 'fa-sync', 'fa-spin', 'fa-check-circle', 'fa-exclamation-triangle');
 
     switch (connectionState) {
         case 'disconnected':
             navConnect.classList.add('text-gray-400');
-            connectIcon.classList.add('fa-bluetooth');
+            connectIcon.classList.add('fa-wifi');
             break;
         case 'qr_display':
+            navConnect.classList.add('text-blue-500');
+            connectIcon.classList.add('fa-wifi');
+            break;
         case 'connecting':
             navConnect.classList.add('text-blue-500');
-            connectIcon.classList.add('fa-bluetooth-b');
+            connectIcon.classList.add('fa-sync', 'fa-spin');
             break;
         case 'connected':
             navConnect.classList.add('text-green-500');
