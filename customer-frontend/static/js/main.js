@@ -419,6 +419,14 @@ function handleNav(page) {
         return; // Stop here, don't change active tab
     }
 
+    // Special Case: Connect (Phone Pairing)
+    if (page === 'connect') {
+        if (typeof openConnectModal === 'function') {
+            openConnectModal();
+        }
+        return; // Don't update nav visuals for modal
+    }
+
     // 1. Update Nav Visuals
     updateNavVisuals(page);
 
